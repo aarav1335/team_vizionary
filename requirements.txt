@@ -1,0 +1,9 @@
+intake-esm
+gcsfs
+zarr
+xarray
+netCDF4
+cftime
+pandas
+matplotlib
+seaborn
