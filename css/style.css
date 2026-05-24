@@ -1,0 +1,302 @@
+/* ============================================================
+   CMIP6 Climate Futures Explorer — Style Sheet
+   Tech Stack: D3.js v7 + Scrollama + TopoJSON
+   Theme: Clean light, high legibility
+   ============================================================ */
+
+/* ---- Reset & Base ---- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f5f7fa;
+  color: #1a2332;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Typography ---- */
+h1, h2, h3, h4 {
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); }
+h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); }
+
+p {
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: #2d3748;
+}
+
+strong {
+  font-weight: 600;
+  color: #1a202c;
+}
+
+/* ---- Hero Section ---- */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(135deg, #e8eef7 0%, #dce6f5 50%, #e8f0fe 100%);
+  overflow: hidden;
+}
+
+#hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at 30% 50%, rgba(30, 80, 180, 0.04) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 50%, rgba(200, 80, 30, 0.03) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  padding: 2rem;
+}
+
+.hero-title {
+  font-weight: 800;
+  color: #1a2332;
+  margin-bottom: 1.2rem;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: #4a5568;
+  line-height: 1.7;
+}
+
+.scroll-indicator {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: #718096;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.scroll-indicator svg {
+  opacity: 0.5;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* ---- Scrollytelling Layout ---- */
+main {
+  position: relative;
+}
+
+/* Sticky visualization panel */
+#viz-container {
+  position: sticky;
+  top: 10vh;
+  z-index: 10;
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+#viz-panel {
+  width: 90%;
+  max-width: 1100px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+#viz-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: opacity 0.5s ease;
+}
+
+#viz-d3 {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- Scrollable Steps ---- */
+#scrolly {
+  position: relative;
+  z-index: 20;
+  padding: 0;
+  margin-top: -80vh; /* Pull steps up so first step starts at viz panel */
+  pointer-events: none;
+}
+
+.step {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 6rem 2rem;
+  pointer-events: auto;
+}
+
+.step-card {
+  max-width: 420px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 2rem 2rem 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.step-card h2 {
+  margin-bottom: 0.8rem;
+  color: #1a2332;
+}
+
+.step-card p {
+  margin-bottom: 1rem;
+}
+
+.step-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4a6a9a;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 0.8rem;
+}
+
+/* ---- Takeaway Section ---- */
+#takeaway {
+  position: relative;
+  z-index: 30;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+  padding: 4rem 2rem;
+}
+
+.takeaway-content {
+  max-width: 700px;
+}
+
+.takeaway-content h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 1.5rem;
+  color: #1a2332;
+}
+
+.takeaway-content p {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.attribution {
+  font-size: 0.85rem;
+  color: #718096;
+  margin-top: 2rem;
+}
+
+/* ---- Step Enter Animations ---- */
+.step-card {
+  opacity: 0.3;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.step.active .step-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  #viz-container {
+    top: 5vh;
+    height: 50vh;
+  }
+
+  #scrolly {
+    margin-top: -50vh;
+  }
+
+  .step {
+    padding: 4rem 1rem;
+    justify-content: center;
+  }
+
+  .step-card {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  #viz-container {
+    top: 2vh;
+    height: 40vh;
+  }
+
+  #scrolly {
+    margin-top: -40vh;
+  }
+
+  .step-card {
+    max-width: 100%;
+    padding: 1.2rem;
+    font-size: 0.95rem;
+  }
+
+  .step-card p {
+    font-size: 0.95rem;
+  }
+}
+
+/* ---- Debug helper (disable for production) ---- */
+.scrollama-debug {
+  z-index: 1000;
+}

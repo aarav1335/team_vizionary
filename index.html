@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Climate Futures Explorer — CMIP6 Scrollytelling</title>
+  <meta name="description" content="An explorable explanation of CMIP6 climate projections — how different emissions scenarios shape regional climate futures.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- D3.js v7 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- Scrollama -->
+  <script src="https://unpkg.com/scrollama@3"></script>
+  <!-- TopoJSON client -->
+  <script src="https://unpkg.com/topojson-client@3"></script>
+</head>
+<body>
+
+  <!-- ===== HERO ===== -->
+  <section id="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Climate Futures Explorer</h1>
+      <p class="hero-subtitle">
+        How do our choices today shape the climate of tomorrow?
+        <br>
+        Scroll to explore four possible futures under different emissions pathways.
+      </p>
+      <div class="scroll-indicator">
+        <span>Scroll to begin</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SCROLLYTELLING ===== -->
+  <main>
+
+    <!-- Sticky visualization panel -->
+    <div id="viz-container">
+      <div id="viz-panel">
+        <!-- Static images for steps 1–6 -->
+        <img id="viz-img" src="img/01_global_temperature_change_map.png" alt="Climate visualization">
+        <!-- Interactive D3 container for steps 7–8 -->
+        <div id="viz-d3" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- Scrollable text steps -->
+    <article id="scrolly">
+      <!-- Step 1 — Context -->
+      <div class="step" data-step="1">
+        <div class="step-card">
+          <h2>What is CMIP6?</h2>
+          <p>
+            The <strong>Coupled Model Intercomparison Project Phase 6 (CMIP6)</strong> is the
+            world's most comprehensive collection of climate simulations, coordinated by
+            over 40 institutions worldwide. These models project how our climate will
+            evolve under different <strong>Shared Socioeconomic Pathways (SSPs)</strong> —
+            scenarios that describe possible futures based on emissions, policy, and
+            societal choices.
+          </p>
+          <p class="step-label">Temperature anomaly under SSP5-8.5 by 2100</p>
+        </div>
+      </div>
+
+      <!-- Step 2 — Current State -->
+      <div class="step" data-step="2">
+        <div class="step-card">
+          <h2>Present-Day Warming</h2>
+          <p>
+            Warming is already here. Between 2015 and 2024, global average temperatures
+            have risen <strong>~0.3–0.9°C</strong> above the 1995–2014 baseline, with
+            the Arctic warming several times faster. Precipitation patterns are also
+            shifting — some regions are getting wetter, others drier.
+          </p>
+          <p class="step-label">Precipitation change under SSP5-8.5 by 2100</p>
+        </div>
+      </div>
+
+      <!-- Step 3 — SSP5-8.5 (Worst Case) -->
+      <div class="step" data-step="3">
+        <div class="step-card">
+          <h2>SSP5-8.5: Business as Usual</h2>
+          <p>
+            If emissions continue unabated (the "fossil-fueled development" path),
+            global temperatures could rise <strong>4–5°C</strong> by 2100. The Arctic
+            would warm over 15°C. This scenario represents the upper bound of possible
+            climate outcomes — and the stakes couldn't be higher.
+          </p>
+          <p class="step-label">Global temperature scenarios over time</p>
+        </div>
+      </div>
+
+      <!-- Step 4 — SSP3-7.0 (High) -->
+      <div class="step" data-step="4">
+        <div class="step-card">
+          <h2>SSP3-7.0: Regional Rivalry</h2>
+          <p>
+            In this high-emissions scenario, warming reaches <strong>~3–4°C</strong>
+            globally by 2100. But the impacts are far from uniform. The Arctic warms
+            more than four times the global average, while tropical regions face
+            combined heat and precipitation stress.
+          </p>
+          <p class="step-label">Projected 2100 warming by region</p>
+        </div>
+      </div>
+
+      <!-- Step 5 — SSP2-4.5 (Middle) -->
+      <div class="step" data-step="5">
+        <div class="step-card">
+          <h2>SSP2-4.5: Middle of the Road</h2>
+          <p>
+            Under this "middle path" scenario — where current policies continue but
+            some mitigation is adopted — warming stabilizes around <strong>~2.5–3°C</strong>.
+            The world still warms significantly, but many of the worst outcomes are avoided.
+          </p>
+          <p class="step-label">Temperature vs. precipitation change by region</p>
+        </div>
+      </div>
+
+      <!-- Step 6 — SSP1-2.6 (Best Case) -->
+      <div class="step" data-step="6">
+        <div class="step-card">
+          <h2>SSP1-2.6: The Green Path</h2>
+          <p>
+            With aggressive emissions reductions and a shift toward sustainability,
+            warming could be held to <strong>~1.5–2°C</strong>. This is the pathway
+            aligned with the Paris Agreement goals. It requires rapid decarbonization
+            — but the data shows it's still within reach.
+          </p>
+          <p class="step-label">Regional warming accelerates through the century</p>
+        </div>
+      </div>
+
+      <!-- Step 7 — Interactive Exploration -->
+      <div class="step" data-step="7">
+        <div class="step-card">
+          <h2>Explore the Data</h2>
+          <p>
+            Now it's your turn. Toggle between scenarios, compare regions, and see
+            how different choices lead to different futures. The data comes directly
+            from the CMIP6 climate model ensemble.
+          </p>
+          <p class="step-label">Interactive D3 visualization below</p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- ===== TAKEAWAY ===== -->
+  <section id="takeaway">
+    <div class="takeaway-content">
+      <h2>The future isn't written yet.</h2>
+      <p>
+        Every fraction of a degree of warming prevented matters — especially for the
+        Arctic, which warms four times faster than the global average, and for regions
+        already on the edge of water security. The choice between SSP1-2.6 and SSP5-8.5
+        is the difference between a world we can adapt to and one we cannot.
+      </p>
+      <p class="attribution">
+        Data: CMIP6 multi-model ensemble · Visualization: Team Vizionary · DSC 106
+      </p>
+    </div>
+  </section>
+
+  <!-- Scripts (defer for non-critical) -->
+  <script src="js/utils.js"></script>
+  <script src="js/scrollSections.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
