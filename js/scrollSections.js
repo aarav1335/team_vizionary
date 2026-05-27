@@ -16,6 +16,9 @@ function updateVisualization(step) {
 
   // Update step indicator on body (for debugging / CSS hooks)
   document.body.dataset.currentStep = step;
+  document.querySelectorAll('.step').forEach((stepEl) => {
+    stepEl.classList.toggle('active', parseInt(stepEl.dataset.step, 10) === step);
+  });
 
   if (isInteractiveStep(step)) {
     // Hide static image, show interactive D3

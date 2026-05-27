@@ -4,6 +4,12 @@
    Theme: Clean light, high legibility
    ============================================================ */
 
+:root {
+  --story-card-width: 380px;
+  --story-gap: clamp(1.5rem, 3vw, 3rem);
+  --page-gutter: clamp(1rem, 4vw, 4rem);
+}
+
 /* ---- Reset & Base ---- */
 *,
 *::before,
@@ -124,13 +130,17 @@ main {
   z-index: 10;
   width: 100%;
   height: 80vh;
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--story-card-width) minmax(0, 1100px);
+  gap: var(--story-gap);
   align-items: center;
   justify-content: center;
+  padding: 0 var(--page-gutter);
 }
 
 #viz-panel {
-  width: 90%;
+  grid-column: 2;
+  width: 100%;
   max-width: 1100px;
   height: 100%;
   display: flex;
@@ -171,17 +181,20 @@ main {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 6rem 2rem;
+  width: min(calc(1100px + var(--story-card-width) + var(--story-gap)), calc(100% - (2 * var(--page-gutter))));
+  margin: 0 auto;
+  padding: 6rem 0;
   pointer-events: auto;
 }
 
 .step-card {
-  max-width: 420px;
-  background: #ffffff;
+  width: var(--story-card-width);
+  max-width: 100%;
+  background: rgba(255, 255, 255, 0.97);
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 2rem 2rem 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  padding: 1.5rem 1.5rem 1.25rem;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.13), 0 2px 8px rgba(15, 23, 42, 0.08);
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
@@ -206,7 +219,90 @@ main {
   padding-top: 0.8rem;
 }
 
-/* ---- Takeaway Section ---- */
+/* ---- Prototype Writeup ---- */
+#prototype-writeup {
+  position: relative;
+  z-index: 30;
+  background: #ffffff;
+  padding: 6rem 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.writeup-content {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.section-kicker {
+  margin-bottom: 0.6rem;
+  color: #1e40af;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.writeup-content > h2 {
+  max-width: 760px;
+  margin-bottom: 2rem;
+  color: #1a2332;
+}
+
+.writeup-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.writeup-block {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  background: #f8fafc;
+}
+
+.writeup-block h3 {
+  margin-bottom: 0.8rem;
+  color: #1a2332;
+  font-size: 1.15rem;
+}
+
+.writeup-block p {
+  color: #334155;
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+.prototype-status {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 1.5rem;
+  overflow: hidden;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #dbe3ef;
+}
+
+.prototype-status div {
+  padding: 1rem;
+  background: #ffffff;
+}
+
+.prototype-status dt {
+  margin-bottom: 0.3rem;
+  color: #475569;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.prototype-status dd {
+  color: #0f172a;
+  font-size: 0.95rem;
+}
+
 #takeaway {
   position: relative;
   z-index: 30;
@@ -243,8 +339,8 @@ main {
 
 /* ---- Step Enter Animations ---- */
 .step-card {
-  opacity: 0.3;
-  transform: translateY(20px);
+  opacity: 0;
+  transform: translateY(18px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
@@ -269,6 +365,8 @@ body[data-current-step="8"] .step-card {
   #viz-container {
     top: 5vh;
     height: 50vh;
+    display: flex;
+    padding: 0 1rem;
   }
 
   #scrolly {
@@ -276,13 +374,24 @@ body[data-current-step="8"] .step-card {
   }
 
   .step {
+    width: auto;
+    margin: 0;
     padding: 4rem 1rem;
     justify-content: center;
+  }
+
+  #viz-panel {
+    width: 100%;
   }
 
   .step-card {
     max-width: 90%;
     padding: 1.5rem;
+  }
+
+  .writeup-grid,
+  .prototype-status {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -304,6 +413,15 @@ body[data-current-step="8"] .step-card {
 
   .step-card p {
     font-size: 0.95rem;
+  }
+
+  #prototype-writeup {
+    padding: 4rem 1rem;
+  }
+
+  .writeup-grid,
+  .prototype-status {
+    grid-template-columns: 1fr;
   }
 }
 

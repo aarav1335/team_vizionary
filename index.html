@@ -156,6 +156,63 @@
     </article>
   </main>
 
+  <!-- ===== PROTOTYPE WRITEUP ===== -->
+  <section id="prototype-writeup" aria-labelledby="writeup-title">
+    <div class="writeup-content">
+      <p class="section-kicker">Initial Prototype Writeup</p>
+      <h2 id="writeup-title">What we have built so far</h2>
+
+      <div class="writeup-grid">
+        <article class="writeup-block">
+          <h3>Current progress</h3>
+          <p>
+            Team Vizionary has built the foundation for an explorable explanation of CMIP6 climate projections.
+            So far, we have prepared a climate data pipeline covering near-surface air temperature and precipitation
+            across four Shared Socioeconomic Pathways: SSP1-2.6, SSP2-4.5, SSP3-7.0, and SSP5-8.5. The processed
+            data includes global and regional time series from 2015 to 2100, summary statistics for eight regions,
+            a TopoJSON world basemap, and gridded JSON exports for late-century map views. We also created six static
+            exploratory visualizations to frame the story, including global temperature and precipitation maps,
+            scenario comparison lines, regional warming bars, a temperature-precipitation scatter plot, and a regional
+            heatmap. On the website, we have implemented the main scrollytelling structure with a full-screen hero,
+            a sticky visualization panel, scroll-triggered narrative steps, and a final takeaway section.
+          </p>
+        </article>
+
+        <article class="writeup-block">
+          <h3>Design challenge ahead</h3>
+          <p>
+            The hardest part of the final project will be designing the interactive geographic view and connecting it
+            to the rest of the story. Climate model output starts as high-dimensional gridded data, so we need to
+            translate it into web-friendly formats that load quickly while still preserving meaningful regional
+            patterns. The choropleth map must support scenario changes, temperature and precipitation toggles,
+            readable color scales, hover tooltips, and click-based region selection without overwhelming the viewer.
+            The linked-view interaction is especially challenging because a selected region should update the map,
+            line chart, bar chart, and other supporting views consistently. We also need to balance scientific nuance
+            with clarity, making sure users understand that the difference between low- and high-emissions pathways is
+            not abstract: it changes how much warming regions experience and how precipitation patterns shift by 2100.
+            Our final design goal is to make the data feel explorable while still guiding visitors toward the main
+            takeaway that the future depends on choices made now.
+          </p>
+        </article>
+      </div>
+
+      <dl class="prototype-status" aria-label="Prototype status summary">
+        <div>
+          <dt>Data</dt>
+          <dd>CMIP6 CSV, JSON, and map assets prepared</dd>
+        </div>
+        <div>
+          <dt>Prototype</dt>
+          <dd>GitHub Pages scrollytelling page deployed</dd>
+        </div>
+        <div>
+          <dt>Next</dt>
+          <dd>Linked D3 map, charts, annotations, and polish</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
   <!-- ===== TAKEAWAY ===== -->
   <section id="takeaway">
     <div class="takeaway-content">
