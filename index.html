@@ -172,9 +172,10 @@
     </div>
   </section>
 
-  <!-- Scripts (defer for non-critical) -->
-  <script src="js/utils.js"></script>
-  <script src="js/scrollSections.js"></script>
-  <script src="js/main.js"></script>
+  <!-- Scripts (defer — execute in order) -->
+  <script src="js/utils.js" defer></script>
+  <script src="js/charts/choroplethMap.js" defer></script>
+  <script src="js/scrollSections.js" defer></script>
+  <script src="js/main.js" defer></script>
 </body>
 </html>

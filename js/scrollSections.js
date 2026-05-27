@@ -43,13 +43,71 @@ function updateVisualization(step) {
 
 /**
  * Initialize all interactive D3 charts (called once on first interactive step).
- * Placeholder — will be fleshed out in Phase 3.
  */
 function initInteractiveVisualizations() {
   const container = document.getElementById('viz-d3');
-  container.innerHTML = '<p style="color:#4a5568; font-size:1.1rem;">Interactive D3 visualizations coming in Phase 3. Select a scenario above to explore.</p>';
+  container.innerHTML = '';
 
-  // TODO Phase 3: Initialize lineChart, barChart, scatterPlot, heatmap, choroplethMap
+  // Create controls bar
+  const controls = document.createElement('div');
+  controls.className = 'map-controls';
+  controls.innerHTML = `
+    <div class="control-group">
+      <span class="control-label">Scenario:</span>
+      <div class="btn-group" id="scenario-buttons">
+        <button class="btn btn-scenario active" data-scenario="ssp126">SSP1-2.6</button>
+        <button class="btn btn-scenario" data-scenario="ssp245">SSP2-4.5</button>
+        <button class="btn btn-scenario" data-scenario="ssp370">SSP3-7.0</button>
+        <button class="btn btn-scenario" data-scenario="ssp585">SSP5-8.5</button>
+      </div>
+    </div>
+    <div class="control-group">
+      <span class="control-label">Variable:</span>
+      <div class="btn-group" id="variable-buttons">
+        <button class="btn btn-variable active" data-variable="tas">Temperature</button>
+        <button class="btn btn-variable" data-variable="pr">Precipitation</button>
+      </div>
+    </div>
+    <div class="control-group">
+      <span class="control-label">Click a region</span>
+      <span class="control-hint">to explore</span>
+    </div>
+  `;
+
+  // Create map container
+  const mapDiv = document.createElement('div');
+  mapDiv.className = 'choropleth-map-container';
+  mapDiv.id = 'choropleth-map';
+
+  container.appendChild(controls);
+  container.appendChild(mapDiv);
+
+  // Initialize the choropleth map
+  const map = choroplethMap(mapDiv, {
+    summary: window.__CHART_DATA?.summary,
+    worldTopo: window.__CHART_DATA?.worldTopo,
+  });
+
+  // Wire up scenario buttons
+  controls.querySelectorAll('.btn-scenario').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      controls.querySelectorAll('.btn-scenario').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      await map.updateScenario(btn.dataset.scenario);
+    });
+  });
+
+  // Wire up variable buttons
+  controls.querySelectorAll('.btn-variable').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      controls.querySelectorAll('.btn-variable').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      await map.updateVariable(btn.dataset.variable);
+    });
+  });
+
+  // Store map reference for later use
+  window.__choroplethMap = map;
 }
 
 /**

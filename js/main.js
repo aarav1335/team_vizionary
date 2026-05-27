@@ -29,6 +29,8 @@
       data.worldTopo = worldTopo;
 
       dataLoaded = true;
+      // Expose data globally for chart modules
+      window.__CHART_DATA = { timeseries, summary, worldTopo };
       console.log(`✅ Loaded ${timeseries.length} time series rows, ${summary.length} summary rows, and world basemap.`);
     } catch (err) {
       console.warn('⚠️ Data loading failed — some features may be unavailable:', err.message);

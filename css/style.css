@@ -21,7 +21,7 @@ html {
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: #f5f7fa;
-  color: #1a2332;
+  color: #0f172a;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
@@ -39,7 +39,7 @@ h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); }
 p {
   font-size: 1.05rem;
   font-weight: 400;
-  color: #2d3748;
+  color: #0f172a;
 }
 
 strong {
@@ -86,7 +86,7 @@ strong {
 
 .hero-subtitle {
   font-size: clamp(1rem, 2vw, 1.3rem);
-  color: #4a5568;
+  color: #1e293b;
   line-height: 1.7;
 }
 
@@ -127,7 +127,6 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
 }
 
 #viz-panel {
@@ -135,8 +134,8 @@ main {
   max-width: 1100px;
   height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
   border-radius: 12px;
   overflow: hidden;
   background: #ffffff;
@@ -148,14 +147,14 @@ main {
   max-height: 100%;
   object-fit: contain;
   transition: opacity 0.5s ease;
+  pointer-events: none;
 }
 
 #viz-d3 {
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: none;
+  flex-direction: column;
 }
 
 /* ---- Scrollable Steps ---- */
@@ -193,6 +192,7 @@ main {
 
 .step-card p {
   margin-bottom: 1rem;
+  color: #1e293b;
 }
 
 .step-label {
@@ -253,6 +253,17 @@ main {
   transform: translateY(0);
 }
 
+/* Allow clicks to pass through steps to interactive viz panel */
+body[data-current-step="7"] .step,
+body[data-current-step="8"] .step {
+  pointer-events: none;
+}
+
+body[data-current-step="7"] .step-card,
+body[data-current-step="8"] .step-card {
+  pointer-events: auto;
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 900px) {
   #viz-container {
@@ -294,6 +305,107 @@ main {
   .step-card p {
     font-size: 0.95rem;
   }
+}
+
+/* ---- Map Controls ---- */
+.map-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  width: 100%;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.control-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.control-hint {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.btn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+}
+
+.btn.active {
+  background: #1e40af;
+  border-color: #1e40af;
+  color: #ffffff;
+}
+
+.btn.active:hover {
+  background: #1e3a8a;
+}
+
+/* ---- Choropleth Map ---- */
+.choropleth-map-container {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---- Map Tooltip ---- */
+.map-tooltip {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  pointer-events: none;
+  z-index: 100;
+  max-width: 220px;
+}
+
+.map-tooltip strong {
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+/* ---- Interactive Panel Layout ---- */
+#viz-d3 {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 
 /* ---- Debug helper (disable for production) ---- */

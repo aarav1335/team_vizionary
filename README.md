@@ -38,6 +38,16 @@ An explorable explanation website that walks visitors through CMIP6 climate proj
 | 4 | Narrative & polish | ⬜ Pending |
 | 5 | Deployment & deliverables | ⬜ Pending |
 
+## Prototype Writeup
+
+### What have you done so far?
+
+Created the CMIP6 data pipeline (temperature + precipitation, 4 SSP scenarios, 8 regions, 2015–2100), 6 static exploratory visualizations, project plan, and an interactive D3 line chart. Set up the scrollytelling page structure (hero section, sticky visualization panel, 7 scroll steps with static PNGs, and a takeaway section) with Scrollama integration. Deployed the scaffolding with a clean light theme using Inter font, responsive breakpoints, and smooth step-entrance animations. All data files (CSVs, TopoJSON world basemap, gridded JSON exports) are loaded and ready for Phase 3 interactive charts.
+
+### What will be the most challenging of your project to design and why?
+
+The geographic choropleth map with linked views. Converting gridded NetCDF data to renderable web formats, projecting it onto a world map, and ensuring smooth transitions between scenarios and time periods while keeping file sizes reasonable for browser loading will be the hardest technical challenge. Coordinating clicks on the map to update the other charts (line chart, bar chart, scatter plot) adds further complexity, as each linked view must respond to region selections across different data granularities.
+
 ## Data Source
 
 CMIP6 multi-model ensemble data accessed via the Pangeo CMIP6 cloud catalog ([Google Storage](https://console.cloud.google.com/marketplace/product/noaa-public/cmip6)).
