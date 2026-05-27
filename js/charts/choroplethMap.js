@@ -70,7 +70,7 @@ function choroplethMap(container, data) {
   defs.append('filter')
     .attr('id', 'heatmap-blur')
     .append('feGaussianBlur')
-    .attr('stdDeviation', 3);
+    .attr('stdDeviation', 4);
 
   // Clip path for globe
   defs.append('clipPath')
@@ -82,10 +82,13 @@ function choroplethMap(container, data) {
     .attr('transform', `translate(${margin.left},${margin.top})`)
     .attr('clip-path', 'url(#map-clip)');
 
+  // Zoom/pan layer — all geographic content goes here
+  const zoomLayer = g.append('g').attr('class', 'zoom-layer');
+
   // Graticule (lat/lon grid lines)
   const graticule = d3.geoGraticule();
 
-  g.append('path')
+  zoomLayer.append('path')
     .attr('class', 'graticule')
     .attr('d', geoPath(graticule()))
     .attr('fill', 'none')
@@ -93,7 +96,7 @@ function choroplethMap(container, data) {
     .attr('stroke-width', 0.3);
 
   // ---- World Map Basemap ----
-  const countriesG = g.append('g').attr('class', 'countries');
+  const countriesG = zoomLayer.append('g').attr('class', 'countries');
 
   if (data.worldTopo) {
     const countriesData = topojson.feature(data.worldTopo, data.worldTopo.objects.countries);
@@ -106,21 +109,55 @@ function choroplethMap(container, data) {
       .attr('stroke-width', 0.4);
   }
 
-  // ---- Grid Cells Layer (colored heatmap) ----
-  const heatmapG = g.append('g')
+  // ---- Heatmap circles (colored, blurred) ----
+  const heatmapG = zoomLayer.append('g')
     .attr('class', 'grid-heatmap')
     .attr('filter', 'url(#heatmap-blur)');
 
-  // ---- Voronoi hit targets (invisible, for interaction) ----
-  const hitG = g.append('g').attr('class', 'grid-hitzone');
-
-  // Hover highlight ring (shown beneath cursor)
-  const heatGlow = g.append('circle')
+  // Hover highlight ring (inside zoom layer)
+  const heatGlow = zoomLayer.append('circle')
     .attr('class', 'heat-glow')
     .attr('fill', '#f8fafc')
     .attr('stroke', '#1e293b')
     .attr('stroke-width', 1.5)
     .attr('opacity', 0);
+
+  // ---- Zoom & Pan behavior ----
+  const zoom = d3.zoom()
+    .scaleExtent([1, 8])
+    .translateExtent([
+      [-innerWidth * 0.5, -innerHeight * 0.5],
+      [innerWidth * 1.5, innerHeight * 1.5],
+    ])
+    .filter(event => {
+      // Allow zoom via: wheel, pinch, drag, or double-click
+      if (event.type === 'dblclick') return true;
+      if (event.type === 'wheel') return true;
+      return !event.ctrlKey && !event.button;
+    })
+    .on('zoom', (event) => {
+      zoomLayer.attr('transform', event.transform);
+    });
+
+  svg.call(zoom);
+
+  // Steal wheel events at the container level to prevent page scrolling
+  // Must use native addEventListener with { passive: false } so preventDefault works
+  container.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, { passive: false });
+
+  // Add a reset-zoom button to the container
+  const resetBtn = d3.select(container)
+    .append('button')
+    .attr('class', 'map-reset-btn')
+    .text('Reset')
+    .on('click', () => {
+      svg.transition()
+        .duration(400)
+        .call(zoom.transform, d3.zoomIdentity);
+    });
 
   // ---- Tooltip ----
   const tooltip = d3.select(container)
@@ -216,9 +253,9 @@ function choroplethMap(container, data) {
       const pos = projection([d.lon, d.lat]);
       if (!pos) return null;
 
-      // Compute radius from projected grid spacing (overlap slightly for smoothness)
+      // Compute radius from projected grid spacing (generous overlap)
       const adj = projection([d.lon, d.lat + latStep]);
-      const r = adj ? Math.abs(pos[1] - adj[1]) * 0.6 : 6;
+      const r = adj ? Math.abs(pos[1] - adj[1]) * 0.95 : 8;
 
       return {
         lat: d.lat,
@@ -245,18 +282,27 @@ function choroplethMap(container, data) {
       </span>`;
   }
 
-  // ---- Render colored heatmap circles + invisible Voronoi hit targets ----
+  // ---- Delaunay index for gapless nearest-point lookup ----
+  let delaunay = null;
+  let delaunayPoints = [];
+
+  // ---- Render heatmap circles (visual only) + setup Delaunay ----
   function renderGrid() {
     const points = computeGridPoints(state.gridData);
     const colorScale = getColorScale(state.variable);
 
     // Remove old elements
     heatmapG.selectAll('*').remove();
-    hitG.selectAll('*').remove();
+    delaunay = null;
+    delaunayPoints = [];
 
     if (points.length < 3) return;
 
-    // --- Colored circles (visual layer) ---
+    // Store points and build Delaunay index for fast nearest-point queries
+    delaunayPoints = points;
+    delaunay = d3.Delaunay.from(points.map(d => [d.cx, d.cy]));
+
+    // --- Colored circles (purely visual) ---
     heatmapG.selectAll('.heat-dot')
       .data(points)
       .join('circle')
@@ -268,47 +314,57 @@ function choroplethMap(container, data) {
       .attr('stroke', 'none')
       .attr('opacity', 0.35);
 
-    // --- Voronoi diagram (invisible hit detection) ---
-    const delaunay = d3.Delaunay.from(points.map(d => [d.cx, d.cy]));
-    const voronoi = delaunay.voronoi([0, 0, innerWidth, innerHeight]);
-
-    hitG.selectAll('.hit-cell')
-      .data(points)
-      .join('path')
-      .attr('class', 'hit-cell')
-      .attr('d', (d, i) => voronoi.renderCell(i))
-      .attr('fill', 'none')
-      .attr('stroke', 'none')
-      .attr('pointer-events', 'all')
-      .on('mouseenter', function (event, d) {
-        tooltip.style('opacity', 1).html(tooltipHTML(d));
-        // Highlight hovered area via enlarged circle
-        heatGlow.transition().duration(150)
-          .attr('cx', d.cx).attr('cy', d.cy)
-          .attr('r', d.r * 1.8)
-          .attr('opacity', 0.25);
-      })
-      .on('mousemove', function (event, d) {
-        tooltip
-          .style('left', `${event.offsetX + 12}px`)
-          .style('top', `${event.offsetY - 10}px`);
-      })
-      .on('mouseleave', function () {
-        tooltip.style('opacity', 0);
-        heatGlow.transition().duration(200).attr('opacity', 0);
-      })
-      .on('click', function (event, d) {
-        const region = findRegion(d.lat, d.lon);
-        state.selectedRegion = region;
-        container.dispatchEvent(new CustomEvent('regionSelected', {
-          detail: { region, scenario: state.scenario, variable: state.variable },
-          bubbles: true,
-        }));
-      });
-
     // Update legend
     renderLegend(state.variable, colorScale);
   }
+
+  // ---- Gapless hover/click via Delaunay nearest-point lookup ----
+  let hoverActive = false;
+
+  function handleMapPointer(event) {
+    const [mx, my] = d3.pointer(event, zoomLayer.node());
+    if (!delaunay || !delaunayPoints.length) return;
+
+    const i = delaunay.find(mx, my);
+    const d = delaunayPoints[i];
+
+    // Show tooltip at the nearest point
+    tooltip.style('opacity', 1)
+      .html(tooltipHTML(d))
+      .style('left', `${event.offsetX + 12}px`)
+      .style('top', `${event.offsetY - 10}px`);
+
+    heatGlow.attr('cx', d.cx).attr('cy', d.cy)
+      .attr('r', d.r * 1.8)
+      .attr('opacity', 0.25);
+
+    hoverActive = true;
+  }
+
+  function handleMapLeave() {
+    tooltip.style('opacity', 0);
+    heatGlow.attr('opacity', 0);
+    hoverActive = false;
+  }
+
+  function handleMapClick(event) {
+    const [mx, my] = d3.pointer(event, zoomLayer.node());
+    if (!delaunay || !delaunayPoints.length) return;
+
+    const i = delaunay.find(mx, my);
+    const d = delaunayPoints[i];
+    const region = findRegion(d.lat, d.lon);
+    state.selectedRegion = region;
+    container.dispatchEvent(new CustomEvent('regionSelected', {
+      detail: { region, scenario: state.scenario, variable: state.variable },
+      bubbles: true,
+    }));
+  }
+
+  // ---- Bind pointer events on the zoom layer (gapless) ----
+  zoomLayer.on('mousemove', handleMapPointer);
+  zoomLayer.on('mouseleave', handleMapLeave);
+  zoomLayer.on('click', handleMapClick);
 
   // ---- Find region from lat/lon (nearest neighbor) ----
   function findRegion(lat, lon) {

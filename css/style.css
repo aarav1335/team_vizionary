@@ -381,6 +381,30 @@ body[data-current-step="8"] .step-card {
   overflow: hidden;
 }
 
+/* ---- Map Reset Button ---- */
+.map-reset-btn {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  z-index: 30;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.15s ease;
+}
+
+.map-reset-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
 /* ---- Map Tooltip ---- */
 .map-tooltip {
   background: #ffffff;
