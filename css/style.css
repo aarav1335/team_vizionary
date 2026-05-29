@@ -490,6 +490,80 @@ body[data-current-step="8"] .step-card {
   background: #1e3a8a;
 }
 
+/* ---- Decade Slider ---- */
+.decade-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 140px;
+  height: 6px;
+  border-radius: 3px;
+  background: #e2e8f0;
+  outline: none;
+  cursor: pointer;
+}
+
+.decade-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1e40af;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.decade-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.decade-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1e40af;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.control-group-slider {
+  margin-left: auto;
+}
+
+.decade-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #334155;
+  min-width: 85px;
+  text-align: center;
+}
+
+.btn-play {
+  padding: 0.35rem 0.55rem;
+  font-size: 0.75rem;
+  min-width: 32px;
+  text-align: center;
+}
+
+.btn-play.active {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}
+
+.btn-play.active:hover {
+  background: #b91c1c;
+}
+
+/* ---- Map Decade Label ---- */
+.map-decade-label {
+  pointer-events: none;
+  user-select: none;
+}
+
 /* ---- Choropleth Map ---- */
 .choropleth-map-container {
   flex: 1;

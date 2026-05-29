@@ -18,10 +18,14 @@ function choroplethMap(container, data) {
   let state = {
     scenario: 'ssp126',
     variable: 'tas',
-    timePeriod: 'latecentury',
+    currentDecadeIndex: 8,     // default: 2091-2100 (last decade)
+    decadesData: null,          // cached { decades: [...], cells: [...] } after load
+    decadeLabels: [],           // ['2015-2020', '2021-2030', ...]
     selectedRegion: null,
-    gridData: null,
+    gridData: null,             // flattened { lat, lon, value } for current decade
     loading: false,
+    isPlaying: false,
+    playbackTimer: null,
   };
 
   // ---- Dimensions ----
@@ -229,15 +233,35 @@ function choroplethMap(container, data) {
   // ---- Data Loading ----
   async function loadGridData(scenario, variable) {
     state.loading = true;
-    const url = `data/processed/grids/${scenario}_${variable}_latecentury.json`;
+    // Load compact per-decade file: { decades: [...], cells: [{lat, lon, values: [...]}] }
+    const url = `data/processed/grids/${scenario}_${variable}_decades.json`;
     try {
-      state.gridData = await d3.json(url);
+      const compactData = await d3.json(url);
+      state.decadesData = compactData;
+      state.decadeLabels = compactData.decades || [];
+      // Extract current decade's data as flat {lat, lon, value} array
+      state.gridData = getGridDataForDecade(state.currentDecadeIndex);
     } catch (err) {
       console.warn('⚠️ Failed to load grid data:', url, err.message);
+      state.decadesData = null;
+      state.decadeLabels = [];
       state.gridData = [];
     }
     state.loading = false;
     return state.gridData;
+  }
+
+  // Extract flat {lat, lon, value} from compact format for a given decade index
+  function getGridDataForDecade(decadeIndex) {
+    if (!state.decadesData || !state.decadesData.cells) return [];
+    const idx = Math.max(0, Math.min(decadeIndex, (state.decadeLabels.length || 1) - 1));
+    return state.decadesData.cells
+      .filter(c => c.values[idx] != null)
+      .map(c => ({
+        lat: c.lat,
+        lon: c.lon,
+        value: c.values[idx],
+      }));
   }
 
   // ---- Compute grid point projected positions ----
@@ -274,11 +298,13 @@ function choroplethMap(container, data) {
     const val = d.value;
     const unit = state.variable === 'tas' ? '°C' : ' mm/day';
     const sign = val > 0 ? '+' : '';
+    const decade = state.decadeLabels[state.currentDecadeIndex] || '';
     return `
       <strong>${regionName}</strong><br>
       <span style="font-size:1.1rem; font-weight:700;">${sign}${val.toFixed(2)}${unit}</span><br>
       <span style="font-size:0.75rem; color:#64748b;">
-        ${SCENARIO_LABELS[state.scenario]} · ${VARIABLES[state.variable].label}
+        ${SCENARIO_LABELS[state.scenario]} · ${VARIABLES[state.variable].label}<br>
+        ${decade}
       </span>`;
   }
 
@@ -287,32 +313,49 @@ function choroplethMap(container, data) {
   let delaunayPoints = [];
 
   // ---- Render heatmap circles (visual only) + setup Delaunay ----
-  function renderGrid() {
+  function renderGrid(transitionDuration = 0) {
     const points = computeGridPoints(state.gridData);
     const colorScale = getColorScale(state.variable);
 
-    // Remove old elements
-    heatmapG.selectAll('*').remove();
+    // Remove old elements (but keep for smooth transition if possible)
     delaunay = null;
     delaunayPoints = [];
 
-    if (points.length < 3) return;
+    if (points.length < 3) { heatmapG.selectAll('*').remove(); return; }
 
-    // Store points and build Delaunay index for fast nearest-point queries
+    // Store points and build Delaunay index
     delaunayPoints = points;
     delaunay = d3.Delaunay.from(points.map(d => [d.cx, d.cy]));
 
-    // --- Colored circles (purely visual) ---
-    heatmapG.selectAll('.heat-dot')
-      .data(points)
-      .join('circle')
+    // --- Colored circles with optional transition ---
+    const circles = heatmapG.selectAll('.heat-dot')
+      .data(points, d => `${d.lat},${d.lon}`);  // key by lat/lon for stable transitions
+
+    circles.exit().remove();
+
+    const enterCircles = circles.enter()
+      .append('circle')
       .attr('class', 'heat-dot')
       .attr('cx', d => d.cx)
       .attr('cy', d => d.cy)
       .attr('r', d => d.r)
-      .attr('fill', d => getColor(d.value, state.variable))
       .attr('stroke', 'none')
-      .attr('opacity', 0.35);
+      .attr('opacity', 0)
+      .attr('fill', d => getColor(d.value, state.variable));
+
+    const merged = enterCircles.merge(circles);
+
+    if (transitionDuration > 0) {
+      merged.transition().duration(transitionDuration).ease(d3.easeCubicInOut)
+        .attr('fill', d => getColor(d.value, state.variable))
+        .attr('r', d => d.r)
+        .attr('opacity', 0.35);
+    } else {
+      merged
+        .attr('fill', d => getColor(d.value, state.variable))
+        .attr('r', d => d.r)
+        .attr('opacity', 0.35);
+    }
 
     // Update legend
     renderLegend(state.variable, colorScale);
@@ -389,28 +432,98 @@ function choroplethMap(container, data) {
     return minDist < 45 ? closest : 'Global';
   }
 
+  // ---- Decade Label (bottom-center of map) ----
+  const decadeLabel = svg.append('text')
+    .attr('class', 'map-decade-label')
+    .attr('x', width / 2)
+    .attr('y', height - 18)
+    .attr('text-anchor', 'middle')
+    .attr('fill', '#475569')
+    .attr('font-size', '12px')
+    .attr('font-weight', '600')
+    .attr('pointer-events', 'none')
+    .text('');
+
+  function updateDecadeLabel() {
+    const label = state.decadeLabels[state.currentDecadeIndex] || '';
+    decadeLabel.text(label ? `Showing: ${label}` : '');
+  }
+
   // ---- Initialize ----
   async function init() {
     await loadGridData(state.scenario, state.variable);
-    renderGrid();
+    updateDecadeLabel();
+    renderGrid(0);
+  }
+
+  // ---- Decade Switching ----
+  async function updateDecade(index) {
+    if (!state.decadesData) return;
+    const newIndex = Math.max(0, Math.min(index, state.decadeLabels.length - 1));
+    if (newIndex === state.currentDecadeIndex) return;
+    state.currentDecadeIndex = newIndex;
+    state.gridData = getGridDataForDecade(newIndex);
+    updateDecadeLabel();
+    renderGrid(600);  // smooth 600ms transition
+  }
+
+  // ---- Auto-Play ----
+  function startPlayback() {
+    if (state.isPlaying) return;
+    state.isPlaying = true;
+    const intervalMs = 2500;
+
+    function advance() {
+      if (!state.isPlaying) return;
+      let next = state.currentDecadeIndex + 1;
+      if (next >= state.decadeLabels.length) next = 0;
+      updateDecade(next).then(() => {
+        state.playbackTimer = setTimeout(advance, intervalMs);
+      });
+    }
+
+    state.playbackTimer = setTimeout(advance, intervalMs);
+  }
+
+  function stopPlayback() {
+    state.isPlaying = false;
+    if (state.playbackTimer) {
+      clearTimeout(state.playbackTimer);
+      state.playbackTimer = null;
+    }
+  }
+
+  function togglePlayback() {
+    if (state.isPlaying) {
+      stopPlayback();
+    } else {
+      startPlayback();
+    }
   }
 
   // ---- Public API ----
   async function updateScenario(scenario) {
+    stopPlayback();
     state.scenario = scenario;
     state.selectedRegion = null;
+    state.currentDecadeIndex = state.decadeLabels.length > 0 ? state.decadeLabels.length - 1 : 0;
     await loadGridData(scenario, state.variable);
-    renderGrid();
+    updateDecadeLabel();
+    renderGrid(0);
   }
 
   async function updateVariable(variable) {
+    stopPlayback();
     state.variable = variable;
     state.selectedRegion = null;
+    state.currentDecadeIndex = state.decadeLabels.length > 0 ? state.decadeLabels.length - 1 : 0;
     await loadGridData(state.scenario, variable);
-    renderGrid();
+    updateDecadeLabel();
+    renderGrid(0);
   }
 
   function destroy() {
+    stopPlayback();
     svg.remove();
     tooltip.remove();
   }
@@ -421,6 +534,10 @@ function choroplethMap(container, data) {
   return {
     updateScenario,
     updateVariable,
+    updateDecade,
+    startPlayback,
+    stopPlayback,
+    togglePlayback,
     destroy,
     getState: () => ({ ...state }),
   };

@@ -32,6 +32,19 @@ const REGIONS = [
   'Global',
 ];
 
+// ---- Decade labels (matching DECADE_SLICES in notebook) ----
+const DECADE_LABELS = [
+  '2015-2020',
+  '2021-2030',
+  '2031-2040',
+  '2041-2050',
+  '2051-2060',
+  '2061-2070',
+  '2071-2080',
+  '2081-2090',
+  '2091-2100',
+];
+
 // ---- Variables ----
 const VARIABLES = {
   tas: { label: 'Temperature', unit: '°C' },
