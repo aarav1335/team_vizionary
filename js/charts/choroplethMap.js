@@ -210,8 +210,8 @@ function choroplethMap(container, data) {
     const dy = event.clientY - dragStartPos[1];
     const sens = 0.25;
     state.rotation = [
-      dragStartRotation[0] + dy * sens,
-      dragStartRotation[1] - dx * sens,
+      dragStartRotation[0] - dy * sens,
+      dragStartRotation[1] + dx * sens,
       dragStartRotation[2],
     ];
     state.rotation[0] = Math.max(-90, Math.min(90, state.rotation[0]));
@@ -243,8 +243,8 @@ function choroplethMap(container, data) {
     const dy = event.touches[0].clientY - dragStartPos[1];
     const sens = 0.25;
     state.rotation = [
-      dragStartRotation[0] + dy * sens,
-      dragStartRotation[1] - dx * sens,
+      dragStartRotation[0] - dy * sens,
+      dragStartRotation[1] + dx * sens,
       dragStartRotation[2],
     ];
     state.rotation[0] = Math.max(-90, Math.min(90, state.rotation[0]));
