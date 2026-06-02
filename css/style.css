@@ -337,6 +337,77 @@ main {
   margin-top: 2rem;
 }
 
+/* ---- Interactive Intro — Centered Transition ---- */
+#interactive-intro {
+  position: relative;
+  z-index: 30;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 50%, #ede9fe 100%);
+  padding: 4rem 2rem;
+}
+
+.interactive-intro-content {
+  max-width: 650px;
+}
+
+.interactive-intro-content .section-kicker {
+  margin-bottom: 0.75rem;
+  color: #4338ca;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.interactive-intro-content h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 1.5rem;
+  color: #1a2332;
+}
+
+.interactive-intro-text {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #334155;
+}
+
+.interactive-intro-content .scroll-indicator {
+  margin-top: 3rem;
+}
+
+/* ---- Interactive Viz Section — Centered ---- */
+#interactive-viz-section {
+  position: relative;
+  z-index: 30;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f7fa;
+  padding: 2rem;
+}
+
+#viz-d3-centered {
+  width: 100%;
+  max-width: 1200px;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+#viz-d3-centered .choropleth-map-container {
+  flex: 1;
+  min-height: 500px;
+}
+
 /* ---- Step Enter Animations ---- */
 .step-card {
   opacity: 0;
@@ -349,16 +420,6 @@ main {
   transform: translateY(0);
 }
 
-/* Allow clicks to pass through steps to interactive viz panel */
-body[data-current-step="7"] .step,
-body[data-current-step="8"] .step {
-  pointer-events: none;
-}
-
-body[data-current-step="7"] .step-card,
-body[data-current-step="8"] .step-card {
-  pointer-events: auto;
-}
 
 /* ---- Responsive ---- */
 @media (max-width: 900px) {
@@ -389,6 +450,14 @@ body[data-current-step="8"] .step-card {
     padding: 1.5rem;
   }
 
+  #interactive-viz-section {
+    padding: 1rem;
+  }
+
+  #viz-d3-centered {
+    min-height: 400px;
+  }
+
   .writeup-grid,
   .prototype-status {
     grid-template-columns: 1fr;
@@ -413,6 +482,15 @@ body[data-current-step="8"] .step-card {
 
   .step-card p {
     font-size: 0.95rem;
+  }
+
+  #interactive-viz-section {
+    padding: 0.5rem;
+  }
+
+  #viz-d3-centered {
+    min-height: 350px;
+    border-radius: 8px;
   }
 
   #prototype-writeup {

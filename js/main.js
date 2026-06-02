@@ -63,16 +63,40 @@
     console.log('✅ Scrollama initialized.');
   }
 
+  // ---- Intersection Observer for Centered Interactive Viz ---- */
+  function initInteractiveObserver() {
+    const vizSection = document.getElementById('interactive-viz-section');
+    if (!vizSection) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            initCenteredInteractiveVisualizations();
+            // Once initialized, no need to observe further
+            observer.unobserve(vizSection);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(vizSection);
+  }
+
   // ---- Bootstrap ----
   async function init() {
     // Load data in the background
     await loadAllData();
 
-    // Initialize Scrollama
+    // Initialize Scrollama for steps 1–6
     initScrollama();
 
     // Set initial visualization state
     updateVisualization(1);
+
+    // Watch for the centered interactive section
+    initInteractiveObserver();
 
     console.log('🚀 Climate Futures Explorer ready.');
   }

@@ -1,14 +1,14 @@
 /* ============================================================
    scrollSections.js — Section trigger logic
-   Maps scroll steps to visualization updates
+   Maps scroll steps 1–6 to static PNG images.
+   Interactive D3 viz is in a separate centered section below.
    ============================================================ */
 
 /**
  * Update the visualization based on the current scroll step.
  *
- * For steps 1–6: show the corresponding static PNG.
- * For step 7: hide the static image and show the interactive D3 panel.
- * For step 8 (takeaway): optional final D3 state.
+ * For steps 1–6: show the corresponding static PNG in the sticky viz panel.
+ * The interactive D3 panel is now a separate centered section below the scrolly.
  */
 function updateVisualization(step) {
   const vizImg = document.getElementById('viz-img');
@@ -20,35 +20,23 @@ function updateVisualization(step) {
     stepEl.classList.toggle('active', parseInt(stepEl.dataset.step, 10) === step);
   });
 
-  if (isInteractiveStep(step)) {
-    // Hide static image, show interactive D3
-    vizImg.style.display = 'none';
-    vizD3.style.display = 'flex';
-
-    // Initialize D3 visualizations only once
-    if (!window.d3Initialized) {
-      window.d3Initialized = true;
-      initInteractiveVisualizations();
-    }
-
-    // Optionally update D3 state based on step
-    onInteractiveStep(step);
-  } else {
-    // Show the corresponding static image
-    const imgSrc = getStepImage(step);
-    if (imgSrc) {
-      vizImg.src = imgSrc;
-      vizImg.style.display = 'block';
-      vizD3.style.display = 'none';
-    }
+  // Show the corresponding static image
+  const imgSrc = getStepImage(step);
+  if (imgSrc) {
+    vizImg.src = imgSrc;
+    vizImg.style.display = 'block';
+    if (vizD3) vizD3.style.display = 'none';
   }
 }
 
 /**
- * Initialize all interactive D3 charts (called once on first interactive step).
+ * Initialize all interactive D3 charts in the centered section.
+ * Called once when the interactive section scrolls into view.
  */
-function initInteractiveVisualizations() {
-  const container = document.getElementById('viz-d3');
+function initCenteredInteractiveVisualizations() {
+  const container = document.getElementById('viz-d3-centered');
+  if (!container || container.dataset.initialized === 'true') return;
+  container.dataset.initialized = 'true';
   container.innerHTML = '';
 
   // Create controls bar
@@ -177,14 +165,4 @@ function initInteractiveVisualizations() {
 
   // Store map reference for later use
   window.__choroplethMap = map;
-}
-
-/**
- * Called on every interactive step transition.
- * @param {number} step - The current scroll step number
- */
-function onInteractiveStep(step) {
-  // TODO Phase 3: Animate D3 charts to reflect the current step context
-  // Step 7: full exploration mode
-  // Step 8: final annotated state
 }
