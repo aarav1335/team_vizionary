@@ -26,10 +26,16 @@ html {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #f5f7fa;
+  background: linear-gradient(to bottom, 
+    #c8956c,  /* warm sandy tan */
+    #a0522d,  /* sienna brown */
+    #6b3a2a   /* deep earth red-brown */
+  );
+
   color: #0f172a;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  background-attachment: fixed;
 }
 
 /* ---- Typography ---- */
@@ -80,20 +86,39 @@ strong {
 .hero-content {
   position: relative;
   z-index: 1;
-  max-width: 800px;
+  max-width: 1200px;
   padding: 2rem;
 }
 
 .hero-title {
-  font-weight: 800;
-  color: #1a2332;
+  font-weight: bolder;
+  color: #ffffff;
   margin-bottom: 1.2rem;
+  font-size: 7rem;
+  font-family: Arial, Helvetica, sans-serif;
+  text-shadow: 4px 4px 10px rgba(0,0,0,0.9),
+               8px 8px 20px rgba(0,0,0,0.7);
+}
+
+#hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.408) 0%,
+    rgba(0, 0, 0, 0.105) 50%,
+    rgba(0, 0, 0, 0.369) 100%
+  );
+  z-index: 0;
 }
 
 .hero-subtitle {
-  font-size: clamp(1rem, 2vw, 1.3rem);
-  color: #1e293b;
+  font-size: clamp(1.5rem, 2vw, 1.3rem);
+  color: #f8f8f8;
   line-height: 1.7;
+  font-weight: bold;
+  text-shadow: 4px 4px 10px rgba(0,0,0,0.9);
 }
 
 .scroll-indicator {
@@ -102,11 +127,12 @@ strong {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  color: #718096;
+  color: #ffffff;
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   animation: bounce 2s ease-in-out infinite;
+  font-weight: bold;
 }
 
 .scroll-indicator svg {
@@ -148,7 +174,7 @@ main {
   justify-content: stretch;
   border-radius: 12px;
   overflow: hidden;
-  background: #ffffff;
+  background: #ffffff91;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
@@ -190,7 +216,7 @@ main {
 .step-card {
   width: var(--story-card-width);
   max-width: 100%;
-  background: rgba(255, 255, 255, 0.97);
+  background: rgba(255, 255, 255, 0.593);
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 1.5rem 1.5rem 1.25rem;
@@ -627,4 +653,219 @@ body[data-current-step="8"] .step-card {
 /* ---- Debug helper (disable for production) ---- */
 .scrollama-debug {
   z-index: 1000;
+}
+
+#hero img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+}
+
+#hero {
+  position: relative;
+  overflow: hidden;
+  justify-content: center;
+  text-align: center;
+  min-height: 100vh;
+}
+
+/* ---- Static Slide ---- */
+#static-slide {
+  position: relative;
+  z-index: 30;
+  background: linear-gradient(to bottom, 
+    #c8956c,
+    #a0522d,
+    #6b3a2a
+  );
+  padding: 4rem 2rem;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.static-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.emissions-viz {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.emissions-viz img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
+
+.right-vizzes {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.temp-viz,
+.precip-viz {
+  flex: 1;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.temp-viz img,
+.precip-viz img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+}
+
+.static-descriptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+.static-desc {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.static-desc h3 {
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.static-desc p {
+  color: #f1f5f9;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   NEW: Trio Panel Layout (Step 8)
+   Big viz on left, two smaller ones stacked on right,
+   description bar along the bottom.
+   ============================================================ */
+
+#viz-trio {
+  display: flex;         /* flex-direction set inline as "flex" when shown */
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.trio-layout {
+  display: grid;
+  grid-template-columns: 3fr 2fr; /* left viz is wider than the two on the right */
+  gap: 8px;
+  flex: 1;              /* fills all vertical space above the description bar */
+  min-height: 0;        /* allows flex children to shrink properly */
+  padding: 8px 8px 0 8px;
+}
+
+.trio-left {
+  height: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.4);
+}
+
+.trio-left img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.trio-right {
+  display: grid;
+  grid-template-rows: 1fr 1fr; /* two equal-height slots */
+  gap: 8px;
+  height: 100%;
+}
+
+.trio-right img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.4);
+}
+
+.trio-description {
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.88);
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.88rem;
+  color: #334155;
+  line-height: 1.6;
+  flex-shrink: 0;       /* never compress — always visible at bottom */
+}
+
+/* Responsive: stack everything vertically on tablet/mobile */
+@media (max-width: 900px) {
+  .trio-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    padding: 6px 6px 0 6px;
+  }
+
+  .trio-right {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    height: auto;
+  }
+
+  .trio-right img {
+    height: 120px;
+  }
+}
+
+@media (max-width: 600px) {
+  .trio-right {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .trio-right img {
+    height: 100px;
+  }
+}
+
+/* Responsive — static slide */
+@media (max-width: 900px) {
+  .static-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .right-vizzes {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .static-descriptions {
+    grid-column: 1;
+    grid-row: 3;
+    grid-template-columns: 1fr;
+  }
 }
