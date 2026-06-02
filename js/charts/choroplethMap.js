@@ -1,5 +1,5 @@
-﻿/* ============================================================
-   choroplethMap.js — 3D Orthographic Globe (D3)
+/* ============================================================
+   choroplethMap.js � 3D Orthographic Globe (D3)
    Data: world-110m.json (TopoJSON) + cmip6 grid JSONs
    Renders gridded data as colored circles on a rotatable globe
    ============================================================ */
@@ -46,31 +46,18 @@ function choroplethMap(container, data) {
     .rotate(state.rotation);
 
   const baseScale = projection.scale();
-  // Zero out projection translate — we use globeG transform for centering
+  // Zero out projection translate � we use globeG transform for centering
   projection.translate([0, 0]);
   const geoPath = d3.geoPath().projection(projection);
 
-  // ---- Hemisphere culling using d3's projection ----
-  // d3.geoOrthographic returns null for points on the back side of the globe
-  function isVisible(lon, lat) {
-    const pos = projection([lon, lat]);
-    return pos !== null && !isNaN(pos[0]) && !isNaN(pos[1]);
+  // ---- Visibility: use D3's own clipAngle (guaranteed correct) ----
+  // D3's geoOrthographic clips at 90° by default. geoPath returns null for
+  // back-face geometry. This is the single source of truth — zero custom math.
+  function isDotVisible(lon, lat) {
+    return geoPath({ type: 'Point', coordinates: [lon, lat] }) !== null;
   }
 
-  // Smooth fade near the limb: 1.0 near center, 0 at ~10px from edge
-  function visibilityFactor(lon, lat) {
-    const pos = projection([lon, lat]);
-    if (!pos) return 0;
-    // Distance from projected center (0,0) normalized by scale
-    const dist = Math.sqrt(pos[0] * pos[0] + pos[1] * pos[1]);
-    const radius = projection.scale();
-    const edge = radius * 0.88;
-    if (dist >= radius) return 0;
-    if (dist <= edge) return 1;
-    return 1 - (dist - edge) / (radius - edge);
-  }
-
-  // ---- Color Scales ----
+// ---- Color Scales ----
   function getColorScale(variable) {
     if (variable === 'pr') {
       return d3.scaleDiverging(d3.interpolateBrBG).domain([-3, 0, 3]);
@@ -108,9 +95,9 @@ function choroplethMap(container, data) {
     .attr('dx', 0).attr('dy', 4).attr('stdDeviation', 12)
     .attr('flood-color', '#000').attr('flood-opacity', 0.4);
 
-  // Blur for heatmap
+  // Blur for heatmap (subtle � too much blur + low opacity = invisible dots)
   defs.append('filter').attr('id', 'heatmap-blur')
-    .append('feGaussianBlur').attr('stdDeviation', 3.5);
+    .append('feGaussianBlur').attr('stdDeviation', 1.5);
 
   // Ocean gradient
   const oceanGrad = defs.append('radialGradient')
@@ -155,7 +142,7 @@ function choroplethMap(container, data) {
     const countriesData = topojson.feature(data.worldTopo, data.worldTopo.objects.countries);
     countriesG.selectAll('path').data(countriesData.features)
       .join('path').attr('d', geoPath)
-      .attr('fill', '#1a3a5c').attr('stroke', '#2a5a8c').attr('stroke-width', 0.5);
+      .attr('fill', '#1a3a5c').attr('stroke', '#6baeff').attr('stroke-width', 0.8);
   }
 
   // ---- Heatmap ----
@@ -188,11 +175,11 @@ function choroplethMap(container, data) {
     const dy = my - dragStartPos[1];
     const sens = 0.25;
     state.rotation = [
-      dragStartRotation[0] + dy * sens,
-      dragStartRotation[1] - dx * sens,
+      dragStartRotation[0] + dx * sens,
+      dragStartRotation[1] - dy * sens,
       dragStartRotation[2],
     ];
-    state.rotation[0] = Math.max(-90, Math.min(90, state.rotation[0]));
+    state.rotation[1] = Math.max(-90, Math.min(90, state.rotation[1]));
     updateProjection();
     renderAll();
   }
@@ -222,11 +209,11 @@ function choroplethMap(container, data) {
     const dy = touch.clientY - dragStartPos[1];
     const sens = 0.25;
     state.rotation = [
-      dragStartRotation[0] + dy * sens,
-      dragStartRotation[1] - dx * sens,
+      dragStartRotation[0] + dx * sens,
+      dragStartRotation[1] - dy * sens,
       dragStartRotation[2],
     ];
-    state.rotation[0] = Math.max(-90, Math.min(90, state.rotation[0]));
+    state.rotation[1] = Math.max(-90, Math.min(90, state.rotation[1]));
     updateProjection();
     renderAll();
   }
@@ -251,7 +238,7 @@ function choroplethMap(container, data) {
 
   // ---- Buttons ----
   const resetBtn = d3.select(container).append('button')
-    .attr('class', 'map-reset-btn').text('↺ Reset')
+    .attr('class', 'map-reset-btn').text('? Reset')
     .on('click', () => {
       stopAutoRotate();
       state.rotation = [0, -10, 0];
@@ -261,7 +248,7 @@ function choroplethMap(container, data) {
     });
 
   const autoRotateBtn = d3.select(container).append('button')
-    .attr('class', 'map-autorotate-btn').text('⟳ Spin')
+    .attr('class', 'map-autorotate-btn').text('? Spin')
     .on('click', toggleAutoRotate);
 
   // ---- Tooltip ----
@@ -279,7 +266,7 @@ function choroplethMap(container, data) {
     const domain = colorScale.domain();
     const legendSvgScale = d3.scaleLinear().domain(domain).range([0, legendWidth]);
     const legendAxis = d3.axisBottom(legendSvgScale).ticks(4)
-      .tickFormat(d => variable === 'tas' ? `${d}°C` : `${d.toFixed(1)}`);
+      .tickFormat(d => variable === 'tas' ? `${d}�C` : `${d.toFixed(1)}`);
 
     legendG.append('rect').attr('x', -6).attr('y', -22)
       .attr('width', legendWidth + 12).attr('height', 50).attr('rx', 4)
@@ -287,7 +274,7 @@ function choroplethMap(container, data) {
 
     legendG.append('text').attr('x', 0).attr('y', -8)
       .attr('fill', '#cbd5e1').attr('font-size', '11px').attr('font-weight', '600')
-      .text(variable === 'tas' ? 'Temperature anomaly (°C)' : 'Precip. anomaly (mm/day)');
+      .text(variable === 'tas' ? 'Temperature anomaly (�C)' : 'Precip. anomaly (mm/day)');
 
     const defsEl = legendG.append('defs');
     const linearGrad = defsEl.append('linearGradient')
@@ -316,19 +303,20 @@ function choroplethMap(container, data) {
     clipPath.select('path').attr('d', geoPath({ type: 'Sphere' }));
   }
 
-  // ---- Render all geographic elements ----
+  // ---- Render all geographic elements (called during rotation) ----
   function renderAll() {
     graticulePath.attr('d', geoPath(graticule()));
     if (data.worldTopo) countriesG.selectAll('path').attr('d', geoPath);
     if (state.gridData && state.gridData.length > 0) renderHeatmapPositions();
+    renderLegend(state.variable, getColorScale(state.variable));
   }
 
   // ---- Data Loading ----
   async function loadGridData(scenario, variable) {
     state.loading = true;
-    const url = `data/processed/grids/${scenario}_${variable}_decades.json`;
+    var url = 'data/processed/grids/' + scenario + '_' + variable + '_decades.json';
     try {
-      const compactData = await d3.json(url);
+      var compactData = await d3.json(url);
       state.decadesData = compactData;
       state.decadeLabels = compactData.decades || [];
       state.gridData = getGridDataForDecade(state.currentDecadeIndex);
@@ -344,81 +332,172 @@ function choroplethMap(container, data) {
 
   function getGridDataForDecade(decadeIndex) {
     if (!state.decadesData || !state.decadesData.cells) return [];
-    const idx = Math.max(0, Math.min(decadeIndex, (state.decadeLabels.length || 1) - 1));
-    return state.decadesData.cells
-      .filter(c => c.values[idx] != null)
-      .map(c => ({ lat: c.lat, lon: c.lon, value: c.values[idx] }));
+    var idx = Math.max(0, Math.min(decadeIndex, (state.decadeLabels.length || 1) - 1));
+    var cells = state.decadesData.cells;
+    var result = [];
+    for (var i = 0; i < cells.length; i++) {
+      var c = cells[i];
+      if (c.values[idx] != null) {
+        result.push({ lat: c.lat, lon: c.lon, value: c.values[idx] });
+      }
+    }
+    return result;
   }
 
-  // ---- Compute grid points with visibility ----
-  function computeGridPoints(gridData) {
-    if (!gridData || gridData.length === 0) return [];
-    const lats = [...new Set(gridData.map(d => d.lat))].sort((a, b) => b - a);
-    const latStep = lats.length > 1 ? Math.abs(lats[1] - lats[0]) : 5;
-    return gridData.map(d => {
-      if (!isVisible(d.lon, d.lat)) return null;
-      const pos = projection([d.lon, d.lat]);
-      if (!pos) return null;
-      const adj = projection([d.lon, d.lat + latStep]);
-      const r = adj ? Math.abs(pos[1] - adj[1]) * 0.95 : 8;
-      const vis = visibilityFactor(d.lon, d.lat);
-      return { lat: d.lat, lon: d.lon, value: d.value, cx: pos[0], cy: pos[1], r: Math.max(r, 3), visible: vis };
-    }).filter(d => d && !isNaN(d.cx) && !isNaN(d.cy));
+  // ---- Compute visible grid points (D3 geoPath for visibility) ----
+  function computeVisiblePoints() {
+    if (!state.gridData || state.gridData.length === 0) return [];
+    projection.rotate(state.rotation);
+    // isDotVisible now uses D3's own geoPath + clipAngle — guaranteed correct.
+    var result = [];
+    var latStep = 5;
+    var refPts = {};
+    var maxDist = projection.scale() * 1.02;
+    var total = state.gridData.length;
+    var passCount = 0, failCount = 0;
+    for (var i = 0; i < total; i++) {
+      var d = state.gridData[i];
+      if (!isDotVisible(d.lon, d.lat)) { failCount++; continue; }
+      passCount++;
+      var pos = projection([d.lon, d.lat]);
+      if (!pos || isNaN(pos[0]) || isNaN(pos[1])) continue;
+      var cx = pos[0], cy = pos[1];
+      if (cx * cx + cy * cy > maxDist * maxDist) continue;
+      var latKey = Math.round(d.lat / latStep) * latStep;
+      if (!(latKey in refPts)) {
+        var adj = projection([d.lon, d.lat + latStep]);
+        refPts[latKey] = (adj && !isNaN(adj[0]) && !isNaN(adj[1]))
+          ? Math.abs(cy - adj[1]) * 0.95 : 8;
+      }
+      var r = Math.max(refPts[latKey], 3);
+      result.push({
+        lon: d.lon, lat: d.lat, value: d.value,
+        cx: cx, cy: cy, r: r, visible: 1,
+      });
+    }
+    if (!computeVisiblePoints._cnt) computeVisiblePoints._cnt = 0;
+    if (++computeVisiblePoints._cnt % 15 === 1) {
+      console.log('dots: ' + passCount + ' visible / ' + total +
+        '  |  rot=[' + state.rotation.map(function(v){return v.toFixed(1);}).join(',') + ']');
+    }
+    return result;
   }
 
   // ---- Tooltip HTML ----
   function tooltipHTML(d) {
     const regionName = findRegion(d.lat, d.lon);
     const val = d.value;
-    const unit = state.variable === 'tas' ? '°C' : ' mm/day';
+    const unit = state.variable === 'tas' ? '�C' : ' mm/day';
     const sign = val > 0 ? '+' : '';
     const decade = state.decadeLabels[state.currentDecadeIndex] || '';
-    return `<strong>${regionName}</strong><br><span style="font-size:1.1rem;font-weight:700;">${sign}${val.toFixed(2)}${unit}</span><br><span style="font-size:0.75rem;color:#94a3b8;">${SCENARIO_LABELS[state.scenario]} · ${VARIABLES[state.variable].label}<br>${decade}</span>`;
+    return `<strong>${regionName}</strong><br><span style="font-size:1.1rem;font-weight:700;">${sign}${val.toFixed(2)}${unit}</span><br><span style="font-size:0.75rem;color:#94a3b8;">${SCENARIO_LABELS[state.scenario]} � ${VARIABLES[state.variable].label}<br>${decade}</span>`;
   }
 
   // ---- Delaunay ----
   let delaunay = null, delaunayPoints = [];
 
   function renderHeatmapPositions() {
-    const allPoints = computeGridPoints(state.gridData);
-    const visiblePoints = allPoints.filter(d => d.visible > 0.01);
+    var visiblePoints = computeVisiblePoints();
     delaunayPoints = visiblePoints;
-    delaunay = visiblePoints.length >= 3 ? d3.Delaunay.from(visiblePoints.map(d => [d.cx, d.cy])) : null;
-    const circles = heatmapG.selectAll('.heat-dot').data(allPoints, d => `${d.lat},${d.lon}`);
-    circles.exit().remove();
-    circles.enter().append('circle').attr('class', 'heat-dot').attr('stroke', 'none')
-      .merge(circles)
-      .attr('cx', d => d.cx).attr('cy', d => d.cy).attr('r', d => d.r)
-      .attr('fill', d => getColor(d.value, state.variable))
-      .attr('opacity', d => d.visible > 0.01 ? 0.2 * Math.min(1, d.visible) : 0);
+    delaunay = visiblePoints.length >= 3
+      ? d3.Delaunay.from(visiblePoints.map(function (d) { return [d.cx, d.cy]; }))
+      : null;
+
+    // Only keep visible dots in the DOM � back-face dots are removed entirely
+    var circles = heatmapG.selectAll('.heat-dot')
+      .data(visiblePoints, function (d) { return d.lat + ',' + d.lon; });
+
+    circles.join(
+      function (enter) {
+        return enter.append('circle')
+          .attr('class', 'heat-dot')
+          .attr('stroke', 'none')
+          .attr('cx', function (d) { return d.cx; })
+          .attr('cy', function (d) { return d.cy; })
+          .attr('r', function (d) { return d.r; })
+          .attr('fill', function (d) {
+            
+            return getColor(d.value, state.variable);
+          })
+          .attr('opacity', function (d) { return 0.18 * d.visible; });
+      },
+      function (update) {
+        return update
+          .attr('cx', function (d) { return d.cx; })
+          .attr('cy', function (d) { return d.cy; })
+          .attr('r', function (d) { return d.r; })
+          .attr('fill', function (d) {
+            
+            return getColor(d.value, state.variable);
+          })
+          .attr('opacity', function (d) { return 0.18 * d.visible; });
+      },
+      function (exit) {
+        return exit.remove();
+      }
+    );
   }
 
-  function renderGrid(transitionDuration = 0) {
-    const points = computeGridPoints(state.gridData);
-    const colorScale = getColorScale(state.variable);
-    delaunay = null; delaunayPoints = [];
-    if (points.length < 3) { heatmapG.selectAll('*').remove(); return; }
-    const visiblePoints = points.filter(d => d.visible > 0.01);
+  function renderGrid(transitionDuration) {
+    if (transitionDuration === undefined) transitionDuration = 0;
+    var visiblePoints = computeVisiblePoints();
     delaunayPoints = visiblePoints;
-    delaunay = visiblePoints.length >= 3 ? d3.Delaunay.from(visiblePoints.map(d => [d.cx, d.cy])) : null;
-    const circles = heatmapG.selectAll('.heat-dot').data(points, d => `${d.lat},${d.lon}`);
-    circles.exit().remove();
-    const enterCircles = circles.enter().append('circle').attr('class', 'heat-dot')
-      .attr('cx', d => d.cx).attr('cy', d => d.cy).attr('r', d => d.r)
-      .attr('stroke', 'none').attr('opacity', 0)
-      .attr('fill', d => getColor(d.value, state.variable));
-    const merged = enterCircles.merge(circles);
+    delaunay = visiblePoints.length >= 3
+      ? d3.Delaunay.from(visiblePoints.map(function (d) { return [d.cx, d.cy]; }))
+      : null;
+
+    var circles = heatmapG.selectAll('.heat-dot')
+      .data(visiblePoints, function (d) { return d.lat + ',' + d.lon; });
+
     if (transitionDuration > 0) {
-      merged.transition().duration(transitionDuration).ease(d3.easeCubicInOut)
-        .attr('fill', d => getColor(d.value, state.variable))
-        .attr('r', d => d.r)
-        .attr('opacity', d => d.visible > 0.01 ? 0.2 * Math.min(1, d.visible) : 0);
+      circles.join(
+        function (enter) {
+          return enter.append('circle').attr('class', 'heat-dot').attr('stroke', 'none')
+            .attr('opacity', 0)
+            .attr('cx', function (d) { return d.cx; })
+            .attr('cy', function (d) { return d.cy; })
+            .attr('r', function (d) { return d.r; })
+            .attr('fill', function (d) {  return getColor(d.value, state.variable); })
+            .transition().duration(transitionDuration).ease(d3.easeCubicInOut)
+            .attr('opacity', function (d) { return 0.18 * d.visible; });
+        },
+        function (update) {
+          return update.transition().duration(transitionDuration).ease(d3.easeCubicInOut)
+            .attr('cx', function (d) { return d.cx; })
+            .attr('cy', function (d) { return d.cy; })
+            .attr('r', function (d) { return d.r; })
+            .attr('fill', function (d) {  return getColor(d.value, state.variable); })
+            .attr('opacity', function (d) { return 0.18 * d.visible; });
+        },
+        function (exit) {
+          return exit.remove();
+        }
+      );
     } else {
-      merged.attr('fill', d => getColor(d.value, state.variable))
-        .attr('r', d => d.r)
-        .attr('opacity', d => d.visible > 0.01 ? 0.2 * Math.min(1, d.visible) : 0);
+      circles.join(
+        function (enter) {
+          return enter.append('circle').attr('class', 'heat-dot').attr('stroke', 'none')
+            .attr('cx', function (d) { return d.cx; })
+            .attr('cy', function (d) { return d.cy; })
+            .attr('r', function (d) { return d.r; })
+            .attr('fill', function (d) {  return getColor(d.value, state.variable); })
+            .attr('opacity', function (d) { return 0.18 * d.visible; });
+        },
+        function (update) {
+          return update
+            .attr('cx', function (d) { return d.cx; })
+            .attr('cy', function (d) { return d.cy; })
+            .attr('r', function (d) { return d.r; })
+            .attr('fill', function (d) {  return getColor(d.value, state.variable); })
+            .attr('opacity', function (d) { return 0.18 * d.visible; });
+        },
+        function (exit) {
+          return exit.remove();
+        }
+      );
     }
-    renderLegend(state.variable, colorScale);
+
+    renderLegend(state.variable, getColorScale(state.variable));
   }
 
   // ---- Hover/click ----
@@ -488,7 +567,7 @@ function choroplethMap(container, data) {
   function startAutoRotate() {
     if (state.isAutoRotating) return;
     state.isAutoRotating = true;
-    autoRotateBtn.text('⏸ Stop').classed('active', true);
+    autoRotateBtn.text('? Stop').classed('active', true);
     function step() {
       if (!state.isAutoRotating) return;
       state.rotation[1] = (state.rotation[1] + 0.15) % 360;
@@ -502,7 +581,7 @@ function choroplethMap(container, data) {
   function stopAutoRotate() {
     state.isAutoRotating = false;
     if (state.autoRotateTimer) { cancelAnimationFrame(state.autoRotateTimer); state.autoRotateTimer = null; }
-    autoRotateBtn.text('⟳ Spin').classed('active', false);
+    autoRotateBtn.text('? Spin').classed('active', false);
   }
 
   function toggleAutoRotate() {
@@ -520,7 +599,7 @@ function choroplethMap(container, data) {
   // ---- Decade Switching ----
   async function updateDecade(index) {
     if (!state.decadesData) return;
-    const newIndex = Math.max(0, Math.min(index, state.decadeLabels.length - 1));
+    var newIndex = Math.max(0, Math.min(index, state.decadeLabels.length - 1));
     if (newIndex === state.currentDecadeIndex) return;
     state.currentDecadeIndex = newIndex;
     state.gridData = getGridDataForDecade(newIndex);
