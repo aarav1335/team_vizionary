@@ -50,48 +50,24 @@ function choroplethMap(container, data) {
   projection.translate([0, 0]);
   const geoPath = d3.geoPath().projection(projection);
 
-  // ---- 3D helpers for hemisphere culling ----
-  function toCartesian(lon, lat) {
-    const λ = lon * Math.PI / 180;
-    const φ = lat * Math.PI / 180;
-    return [
-      Math.cos(φ) * Math.cos(λ),
-      Math.cos(φ) * Math.sin(λ),
-      Math.sin(φ),
-    ];
-  }
-
-  function rotateCartesian(p, rot) {
-    const λ = rot[0] * Math.PI / 180;
-    const φ = rot[1] * Math.PI / 180;
-    const γ = rot[2] * Math.PI / 180;
-    const cosγ = Math.cos(γ), sinγ = Math.sin(γ);
-    let x = p[0] * cosγ - p[1] * sinγ;
-    let y = p[0] * sinγ + p[1] * cosγ;
-    let z = p[2];
-    const cosφ = Math.cos(φ), sinφ = Math.sin(φ);
-    const x2 = x * cosφ - z * sinφ;
-    const z2 = x * sinφ + z * cosφ;
-    x = x2; z = z2;
-    const cosλ = Math.cos(λ), sinλ = Math.sin(λ);
-    const y2 = y * cosλ - z * sinλ;
-    const z3 = y * sinλ + z * cosλ;
-    return [x, y2, z3];
-  }
-
+  // ---- Hemisphere culling using d3's projection ----
+  // d3.geoOrthographic returns null for points on the back side of the globe
   function isVisible(lon, lat) {
-    const cart = toCartesian(lon, lat);
-    const rotated = rotateCartesian(cart, state.rotation);
-    return rotated[2] > -0.05;
+    const pos = projection([lon, lat]);
+    return pos !== null && !isNaN(pos[0]) && !isNaN(pos[1]);
   }
 
+  // Smooth fade near the limb: 1.0 near center, 0 at ~10px from edge
   function visibilityFactor(lon, lat) {
-    const cart = toCartesian(lon, lat);
-    const rotated = rotateCartesian(cart, state.rotation);
-    const z = rotated[2];
-    if (z <= -0.1) return 0;
-    if (z >= 0.1) return 1;
-    return (z + 0.1) / 0.2;
+    const pos = projection([lon, lat]);
+    if (!pos) return 0;
+    // Distance from projected center (0,0) normalized by scale
+    const dist = Math.sqrt(pos[0] * pos[0] + pos[1] * pos[1]);
+    const radius = projection.scale();
+    const edge = radius * 0.88;
+    if (dist >= radius) return 0;
+    if (dist <= edge) return 1;
+    return 1 - (dist - edge) / (radius - edge);
   }
 
   // ---- Color Scales ----
@@ -199,19 +175,21 @@ function choroplethMap(container, data) {
   function handleMouseDown(event) {
     dragging = true;
     dragStartRotation = [...state.rotation];
-    dragStartPos = [event.clientX, event.clientY];
+    const [mx, my] = d3.pointer(event, svg.node());
+    dragStartPos = [mx, my];
     svg.style('cursor', 'grabbing');
     stopAutoRotate();
   }
 
   function handleMouseMove(event) {
     if (!dragging) return;
-    const dx = event.clientX - dragStartPos[0];
-    const dy = event.clientY - dragStartPos[1];
+    const [mx, my] = d3.pointer(event, svg.node());
+    const dx = mx - dragStartPos[0];
+    const dy = my - dragStartPos[1];
     const sens = 0.25;
     state.rotation = [
-      dragStartRotation[0] - dy * sens,
-      dragStartRotation[1] + dx * sens,
+      dragStartRotation[0] + dy * sens,
+      dragStartRotation[1] - dx * sens,
       dragStartRotation[2],
     ];
     state.rotation[0] = Math.max(-90, Math.min(90, state.rotation[0]));
@@ -239,12 +217,13 @@ function choroplethMap(container, data) {
 
   function handleTouchMove(event) {
     if (!dragging || event.touches.length !== 1) return;
-    const dx = event.touches[0].clientX - dragStartPos[0];
-    const dy = event.touches[0].clientY - dragStartPos[1];
+    const touch = event.touches[0];
+    const dx = touch.clientX - dragStartPos[0];
+    const dy = touch.clientY - dragStartPos[1];
     const sens = 0.25;
     state.rotation = [
-      dragStartRotation[0] - dy * sens,
-      dragStartRotation[1] + dx * sens,
+      dragStartRotation[0] + dy * sens,
+      dragStartRotation[1] - dx * sens,
       dragStartRotation[2],
     ];
     state.rotation[0] = Math.max(-90, Math.min(90, state.rotation[0]));
@@ -411,7 +390,7 @@ function choroplethMap(container, data) {
       .merge(circles)
       .attr('cx', d => d.cx).attr('cy', d => d.cy).attr('r', d => d.r)
       .attr('fill', d => getColor(d.value, state.variable))
-      .attr('opacity', d => d.visible > 0.01 ? 0.4 * Math.min(1, d.visible) : 0);
+      .attr('opacity', d => d.visible > 0.01 ? 0.2 * Math.min(1, d.visible) : 0);
   }
 
   function renderGrid(transitionDuration = 0) {
@@ -433,11 +412,11 @@ function choroplethMap(container, data) {
       merged.transition().duration(transitionDuration).ease(d3.easeCubicInOut)
         .attr('fill', d => getColor(d.value, state.variable))
         .attr('r', d => d.r)
-        .attr('opacity', d => d.visible > 0.01 ? 0.4 * Math.min(1, d.visible) : 0);
+        .attr('opacity', d => d.visible > 0.01 ? 0.2 * Math.min(1, d.visible) : 0);
     } else {
       merged.attr('fill', d => getColor(d.value, state.variable))
         .attr('r', d => d.r)
-        .attr('opacity', d => d.visible > 0.01 ? 0.4 * Math.min(1, d.visible) : 0);
+        .attr('opacity', d => d.visible > 0.01 ? 0.2 * Math.min(1, d.visible) : 0);
     }
     renderLegend(state.variable, colorScale);
   }
