@@ -46,6 +46,8 @@ function choroplethMap(container, data) {
     .rotate(state.rotation);
 
   const baseScale = projection.scale();
+  // Zero out projection translate — we use globeG transform for centering
+  projection.translate([0, 0]);
   const geoPath = d3.geoPath().projection(projection);
 
   // ---- 3D helpers for hemisphere culling ----
