@@ -1,13 +1,13 @@
 /* ============================================================
    scrollSections.js — Section trigger logic
-   Maps scroll steps 1–6 to static PNG images.
+   Maps scroll steps 1–7 to static PNG images.
    Interactive D3 viz is in a separate centered section below.
    ============================================================ */
 
 /**
  * Update the visualization based on the current scroll step.
  *
- * For steps 1–6: show the corresponding static PNG in the sticky viz panel.
+ * For steps 1–7: show the corresponding static PNG in the sticky viz panel.
  * The interactive D3 panel is now a separate centered section below the scrolly.
  */
 function updateVisualization(step) {

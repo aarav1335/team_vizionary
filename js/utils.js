@@ -98,11 +98,12 @@ async function loadJSON(url) {
 function getStepImage(step) {
   const imageMap = {
     1: 'img/01_global_temperature_change_map.png',
-    2: 'img/02_global_precipitation_change_map.png',
-    3: 'img/03_scenario_temperature_lines.png',
-    4: 'img/04_regional_warming_bars.png',
-    5: 'img/05_temperature_precipitation_scatter.png',
-    6: 'img/06_regional_temperature_heatmap.png',
+    2: 'img/01_global_temperature_change_map.png',
+    3: 'img/02_global_precipitation_change_map.png',
+    4: 'img/03_scenario_temperature_lines.png',
+    5: 'img/04_regional_warming_bars.png',
+    6: 'img/05_temperature_precipitation_scatter.png',
+    7: 'img/06_regional_temperature_heatmap.png',
   };
   return imageMap[step] || null;
 }
