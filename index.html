@@ -141,20 +141,33 @@
         </div>
       </div>
 
-      <!-- Step 7 — Interactive Exploration -->
-      <div class="step" data-step="7">
-        <div class="step-card">
-          <h2>Explore the Data</h2>
-          <p>
-            Now it's your turn. Toggle between scenarios, compare regions, and see
-            how different choices lead to different futures. The data comes directly
-            from the CMIP6 climate model ensemble.
-          </p>
-          <p class="step-label">Interactive D3 visualization below</p>
-        </div>
-      </div>
     </article>
   </main>
+
+  <!-- ===== INTERACTIVE INTRO — Centered Transition ===== -->
+  <section id="interactive-intro">
+    <div class="interactive-intro-content">
+      <p class="section-kicker">Interactive Exploration</p>
+      <h2>Explore the Data</h2>
+      <p class="interactive-intro-text">
+        Now it's your turn. Toggle between <strong>four emissions scenarios</strong>,
+        compare <strong>temperature</strong> and <strong>precipitation</strong> projections,
+        and see how different choices lead to different futures. The data comes directly
+        from the CMIP6 climate model ensemble — the same models that inform IPCC reports.
+      </p>
+      <div class="scroll-indicator">
+        <span>Scroll to explore</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== INTERACTIVE VISUALIZATION — Centered ===== -->
+  <section id="interactive-viz-section">
+    <div id="viz-d3-centered"></div>
+  </section>
 
   <!-- ===== PROTOTYPE WRITEUP ===== -->
   <section id="prototype-writeup" aria-labelledby="writeup-title">
