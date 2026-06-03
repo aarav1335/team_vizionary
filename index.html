@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Climate Futures Explorer — CMIP6 Scrollytelling</title>
-  <meta name="description" content="An explorable explanation of CMIP6 climate projections — how different emissions scenarios shape regional climate futures.">
+  <title>Climate Futures Explorer — Team Vizionary</title>
+  <meta name="description" content="An interactive explorable explanation of CMIP6 climate futures, emissions pathways, regional warming, and precipitation risk.">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,34 +22,152 @@
   <script src="https://unpkg.com/topojson-client@3"></script>
 </head>
 <body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <a class="nav-brand" href="#hero">Climate Futures</a>
+    <div class="nav-links">
+      <a href="#primer">Primer</a>
+      <a href="#evidence">Evidence</a>
+      <a href="#interactive-intro">Explorer</a>
+      <a href="#takeaway">Takeaways</a>
+    </div>
+  </nav>
 
   <!-- ===== HERO ===== -->
   <section id="hero">
+    <div class="hero-backdrop" aria-hidden="true"></div>
     <div class="hero-content">
-      <h1 class="hero-title">Climate Futures Explorer</h1>
+      <p class="eyebrow">Team Vizionary · DSC 106 Final Project</p>
+      <h1 class="hero-title">One Planet. Four Futures.</h1>
       <p class="hero-subtitle">
-        How do our choices today shape the climate of tomorrow?
-        <br>
-        Scroll to explore four possible futures under different emissions pathways.
+        Climate change is not a single forecast. It is a branching set of
+        possible futures shaped by emissions, policy, technology, and adaptation.
+        This explorer turns CMIP6 climate projections into a guided story you can
+        read, compare, and interrogate.
       </p>
-      <div class="scroll-indicator">
-        <span>Scroll to begin</span>
+      <div class="hero-stats" aria-label="Project summary">
+        <div>
+          <span>4</span>
+          <strong>emissions pathways</strong>
+        </div>
+        <div>
+          <span>8</span>
+          <strong>regions compared</strong>
+        </div>
+        <div>
+          <span>2100</span>
+          <strong>late-century horizon</strong>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <a class="primary-link" href="#primer">Start the story</a>
+        <a class="secondary-link" href="#interactive-intro">Jump to explorer</a>
+      </div>
+      <a class="scroll-indicator" href="#primer" aria-label="Scroll to primer">
+        <span>Begin with CMIP6</span>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
         </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== PRIMER ===== -->
+  <section id="primer" class="primer-section" aria-labelledby="primer-title">
+    <div class="section-shell">
+      <div class="section-header">
+        <p class="section-kicker">Primer</p>
+        <h2 id="primer-title">Before the charts: what are we comparing?</h2>
+        <p>
+          CMIP6 is a coordinated library of climate model experiments used by researchers
+          around the world. Instead of asking for one prediction, CMIP6 asks what the
+          climate system does under different Shared Socioeconomic Pathways, or SSPs:
+          plausible futures built around emissions, energy choices, land use, and policy.
+        </p>
+      </div>
+
+      <div class="primer-grid">
+        <article class="primer-card">
+          <p class="card-kicker">Model ensemble</p>
+          <h3>CMIP6 gives us a controlled way to compare futures.</h3>
+          <p>
+            Each pathway is run through climate models using the same physical system.
+            That makes the comparison meaningful: differences in warming and rainfall are
+            tied to the pathway assumptions, not a change in chart design.
+          </p>
+        </article>
+        <article class="primer-card">
+          <p class="card-kicker">Project focus</p>
+          <h3>We track heat and precipitation through 2100.</h3>
+          <p>
+            The explorer uses near-surface air temperature and daily precipitation
+            anomalies relative to a 1995-2014 baseline, with regional summaries for the
+            Arctic, continents, South Asia, Australia, and the global average.
+          </p>
+        </article>
+      </div>
+
+      <div class="scenario-grid" aria-label="Shared Socioeconomic Pathway summaries">
+        <article class="scenario-card low">
+          <p class="scenario-code">SSP1-2.6</p>
+          <h3>The low-warming path</h3>
+          <p>
+            A sustainability-focused future with aggressive emissions cuts. Warming is
+            not erased, but the late-century global average stays near <strong>1.6°C</strong>
+            in this model run, leaving more room for adaptation.
+          </p>
+        </article>
+        <article class="scenario-card mid">
+          <p class="scenario-code">SSP2-4.5</p>
+          <h3>Middle-of-the-road drift</h3>
+          <p>
+            Current policy momentum continues with partial mitigation. The world still
+            warms substantially, reaching about <strong>3.0°C</strong> globally by late
+            century, and the adaptation window narrows.
+          </p>
+        </article>
+        <article class="scenario-card high">
+          <p class="scenario-code">SSP3-7.0</p>
+          <h3>Regional rivalry</h3>
+          <p>
+            Cooperation weakens, emissions remain high, and regional vulnerability grows.
+            Global warming rises to roughly <strong>5.0°C</strong>, while the Arctic
+            warms more than twice that amount.
+          </p>
+        </article>
+        <article class="scenario-card very-high">
+          <p class="scenario-code">SSP5-8.5</p>
+          <h3>Fossil-fueled development</h3>
+          <p>
+            A fossil-fuel intensive benchmark where warming is fast and large. By
+            2091-2100, the global mean reaches about <strong>6.2°C</strong> above the
+            baseline and the Arctic approaches <strong>14.9°C</strong>.
+          </p>
+        </article>
       </div>
     </div>
   </section>
 
   <!-- ===== SCROLLYTELLING ===== -->
-  <main>
+  <section id="evidence" class="motivation-intro" aria-labelledby="evidence-title">
+    <div class="section-shell compact">
+      <p class="section-kicker">Motivation</p>
+      <h2 id="evidence-title">The stakes become visible when the same planet is viewed six ways.</h2>
+      <p>
+        Each figure below is a D3 visualization rendered from the processed CMIP6 data,
+        designed to show why a pathway comparison matters before you enter the fully
+        interactive globe.
+      </p>
+    </div>
+  </section>
+
+  <main aria-label="Motivation visualizations">
 
     <!-- Sticky visualization panel -->
     <div id="viz-container">
       <div id="viz-panel">
-        <!-- Static images for steps 1–6 -->
+        <!-- PNG fallback if D3 data rendering fails -->
         <img id="viz-img" src="img/01_global_temperature_change_map.png" alt="Climate visualization">
-        <!-- Interactive D3 container for steps 7–8 -->
+        <!-- Live D3 story charts for steps 1-6 -->
         <div id="viz-d3" style="display:none;"></div>
       </div>
     </div>
@@ -59,14 +177,12 @@
       <!-- Step 1 — Context -->
       <div class="step" data-step="1">
         <div class="step-card">
-          <h2>What is CMIP6?</h2>
+          <p class="step-kicker">Heat pattern</p>
+          <h2>Warming is global, but not evenly distributed.</h2>
           <p>
-            The <strong>Coupled Model Intercomparison Project Phase 6 (CMIP6)</strong> is the
-            world's most comprehensive collection of climate simulations, coordinated by
-            over 40 institutions worldwide. These models project how our climate will
-            evolve under different <strong>Shared Socioeconomic Pathways (SSPs)</strong> —
-            scenarios that describe possible futures based on emissions, policy, and
-            societal choices.
+            Under the fossil-fueled pathway, late-century warming appears across the
+            entire map. The deepest signal is at high latitudes, where Arctic warming
+            amplifies faster than the global average.
           </p>
           <p class="step-label">Temperature anomaly under SSP5-8.5 by 2100</p>
         </div>
@@ -75,12 +191,12 @@
       <!-- Step 2 — Current State -->
       <div class="step" data-step="2">
         <div class="step-card">
-          <h2>Present-Day Warming</h2>
+          <p class="step-kicker">Water pattern</p>
+          <h2>Rainfall does not shift in one direction.</h2>
           <p>
-            Warming is already here. Between 2015 and 2024, global average temperatures
-            have risen <strong>~0.3–0.9°C</strong> above the 1995–2014 baseline, with
-            the Arctic warming several times faster. Precipitation patterns are also
-            shifting — some regions are getting wetter, others drier.
+            Precipitation responds unevenly: some regions become wetter, some become
+            drier, and some see sharper variability. This is why climate risk cannot be
+            understood from temperature alone.
           </p>
           <p class="step-label">Precipitation change under SSP5-8.5 by 2100</p>
         </div>
@@ -89,12 +205,13 @@
       <!-- Step 3 — SSP5-8.5 (Worst Case) -->
       <div class="step" data-step="3">
         <div class="step-card">
-          <h2>SSP5-8.5: Business as Usual</h2>
+          <p class="step-kicker">Pathway split</p>
+          <h2>The four futures separate quickly.</h2>
           <p>
-            If emissions continue unabated (the "fossil-fueled development" path),
-            global temperatures could rise <strong>4–5°C</strong> by 2100. The Arctic
-            would warm over 15°C. This scenario represents the upper bound of possible
-            climate outcomes — and the stakes couldn't be higher.
+            The scenario lines begin near the same present, then diverge as emissions
+            choices accumulate. By the end of the century, the difference between
+            SSP1-2.6 and SSP5-8.5 is not a subtle modeling detail; it is a different
+            operating climate.
           </p>
           <p class="step-label">Global temperature scenarios over time</p>
         </div>
@@ -103,12 +220,12 @@
       <!-- Step 4 — SSP3-7.0 (High) -->
       <div class="step" data-step="4">
         <div class="step-card">
-          <h2>SSP3-7.0: Regional Rivalry</h2>
+          <p class="step-kicker">Regional burden</p>
+          <h2>The Arctic becomes the clearest warning signal.</h2>
           <p>
-            In this high-emissions scenario, warming reaches <strong>~3–4°C</strong>
-            globally by 2100. But the impacts are far from uniform. The Arctic warms
-            more than four times the global average, while tropical regions face
-            combined heat and precipitation stress.
+            Regional averages reveal the hidden geography of global warming. Every
+            region warms under SSP5-8.5, but the Arctic is pushed farthest from its
+            historical baseline.
           </p>
           <p class="step-label">Projected 2100 warming by region</p>
         </div>
@@ -117,11 +234,12 @@
       <!-- Step 5 — SSP2-4.5 (Middle) -->
       <div class="step" data-step="5">
         <div class="step-card">
-          <h2>SSP2-4.5: Middle of the Road</h2>
+          <p class="step-kicker">Compound risk</p>
+          <h2>Heat and rainfall combine into regional stress.</h2>
           <p>
-            Under this "middle path" scenario — where current policies continue but
-            some mitigation is adopted — warming stabilizes around <strong>~2.5–3°C</strong>.
-            The world still warms significantly, but many of the worst outcomes are avoided.
+            Warming is universal, but precipitation change is more local. The scatterplot
+            shows which regions face the double problem of rising heat and shifting water
+            availability.
           </p>
           <p class="step-label">Temperature vs. precipitation change by region</p>
         </div>
@@ -130,12 +248,12 @@
       <!-- Step 6 — SSP1-2.6 (Best Case) -->
       <div class="step" data-step="6">
         <div class="step-card">
-          <h2>SSP1-2.6: The Green Path</h2>
+          <p class="step-kicker">Acceleration</p>
+          <h2>By decade, the pattern becomes impossible to miss.</h2>
           <p>
-            With aggressive emissions reductions and a shift toward sustainability,
-            warming could be held to <strong>~1.5–2°C</strong>. This is the pathway
-            aligned with the Paris Agreement goals. It requires rapid decarbonization
-            — but the data shows it's still within reach.
+            The heatmap turns the century into a timeline. Regional warming does not
+            arrive all at once; it intensifies decade by decade, making early pathway
+            choices visible later in the data.
           </p>
           <p class="step-label">Regional warming accelerates through the century</p>
         </div>
@@ -148,12 +266,11 @@
   <section id="interactive-intro">
     <div class="interactive-intro-content">
       <p class="section-kicker">Interactive Exploration</p>
-      <h2>Explore the Data</h2>
+      <h2>Now test the futures yourself.</h2>
       <p class="interactive-intro-text">
-        Now it's your turn. Toggle between <strong>four emissions scenarios</strong>,
-        compare <strong>temperature</strong> and <strong>precipitation</strong> projections,
-        and see how different choices lead to different futures. The data comes directly
-        from the CMIP6 climate model ensemble — the same models that inform IPCC reports.
+        The evidence section motivates the problem; the explorer lets you investigate it.
+        Switch between SSP pathways, compare temperature and precipitation, scrub through
+        decades, and rotate the globe to locate how climate futures move across space.
       </p>
       <div class="scroll-indicator">
         <span>Scroll to explore</span>
@@ -169,72 +286,53 @@
     <div id="viz-d3-centered"></div>
   </section>
 
-  <!-- ===== PROTOTYPE WRITEUP ===== -->
-  <section id="prototype-writeup" aria-labelledby="writeup-title">
-    <div class="writeup-content">
-      <p class="section-kicker">Initial Prototype Writeup</p>
-      <h2 id="writeup-title">What we have built so far</h2>
-
-      <div class="writeup-grid">
-        <article class="writeup-block">
-          <h3>Current progress</h3>
+  <!-- ===== METHOD ===== -->
+  <section id="method" class="method-section" aria-labelledby="method-title">
+    <div class="section-shell">
+      <p class="section-kicker">Method</p>
+      <h2 id="method-title">Built from processed climate model data.</h2>
+      <div class="method-grid">
+        <article>
+          <span>01</span>
+          <h3>Data pipeline</h3>
           <p>
-            Team Vizionary has built the foundation for an explorable explanation of CMIP6 climate projections.
-            So far, we have prepared a climate data pipeline covering near-surface air temperature and precipitation
-            across four Shared Socioeconomic Pathways: SSP1-2.6, SSP2-4.5, SSP3-7.0, and SSP5-8.5. The processed
-            data includes global and regional time series from 2015 to 2100, summary statistics for eight regions,
-            a TopoJSON world basemap, and gridded JSON exports for late-century map views. We also created six static
-            exploratory visualizations to frame the story, including global temperature and precipitation maps,
-            scenario comparison lines, regional warming bars, a temperature-precipitation scatter plot, and a regional
-            heatmap. On the website, we have implemented the main scrollytelling structure with a full-screen hero,
-            a sticky visualization panel, scroll-triggered narrative steps, and a final takeaway section.
+            CMIP6 temperature and precipitation fields were converted into web-ready CSV
+            and JSON assets: global and regional time series, late-century summaries,
+            gridded decade data, and a TopoJSON world basemap.
           </p>
         </article>
-
-        <article class="writeup-block">
-          <h3>Design challenge ahead</h3>
+        <article>
+          <span>02</span>
+          <h3>D3 evidence layer</h3>
           <p>
-            The hardest part of the final project will be designing the interactive geographic view and connecting it
-            to the rest of the story. Climate model output starts as high-dimensional gridded data, so we need to
-            translate it into web-friendly formats that load quickly while still preserving meaningful regional
-            patterns. The choropleth map must support scenario changes, temperature and precipitation toggles,
-            readable color scales, hover tooltips, and click-based region selection without overwhelming the viewer.
-            The linked-view interaction is especially challenging because a selected region should update the map,
-            line chart, bar chart, and other supporting views consistently. We also need to balance scientific nuance
-            with clarity, making sure users understand that the difference between low- and high-emissions pathways is
-            not abstract: it changes how much warming regions experience and how precipitation patterns shift by 2100.
-            Our final design goal is to make the data feel explorable while still guiding visitors toward the main
-            takeaway that the future depends on choices made now.
+            The six motivation figures are rendered as D3 SVG charts from the processed
+            data while preserving the notebook's analytical intent.
+          </p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Interactive layer</h3>
+          <p>
+            The globe loads compact decade grids, then updates color, scenario, variable,
+            time, and rotation in the browser so visitors can move from narrative to
+            exploration.
           </p>
         </article>
       </div>
-
-      <dl class="prototype-status" aria-label="Prototype status summary">
-        <div>
-          <dt>Data</dt>
-          <dd>CMIP6 CSV, JSON, and map assets prepared</dd>
-        </div>
-        <div>
-          <dt>Prototype</dt>
-          <dd>GitHub Pages scrollytelling page deployed</dd>
-        </div>
-        <div>
-          <dt>Next</dt>
-          <dd>Linked D3 map, charts, annotations, and polish</dd>
-        </div>
-      </dl>
     </div>
   </section>
 
   <!-- ===== TAKEAWAY ===== -->
   <section id="takeaway">
     <div class="takeaway-content">
-      <h2>The future isn't written yet.</h2>
+      <p class="section-kicker">Conclusion</p>
+      <h2>The future is not written yet.</h2>
       <p>
-        Every fraction of a degree of warming prevented matters — especially for the
-        Arctic, which warms four times faster than the global average, and for regions
-        already on the edge of water security. The choice between SSP1-2.6 and SSP5-8.5
-        is the difference between a world we can adapt to and one we cannot.
+        The core takeaway is simple but consequential: every fraction of warming avoided
+        changes the map. In this model run, the low pathway keeps late-century global
+        warming near 1.6°C, while the fossil-fueled benchmark climbs beyond 6°C and
+        pushes the Arctic toward 15°C. The difference between pathways is the difference
+        between adaptation under pressure and transformation at planetary scale.
       </p>
       <p class="attribution">
         Data: CMIP6 multi-model ensemble · Visualization: Team Vizionary · DSC 106
@@ -244,6 +342,7 @@
 
   <!-- Scripts (defer — execute in order) -->
   <script src="js/utils.js" defer></script>
+  <script src="js/charts/staticCharts.js" defer></script>
   <script src="js/charts/choroplethMap.js" defer></script>
   <script src="js/scrollSections.js" defer></script>
   <script src="js/main.js" defer></script>
