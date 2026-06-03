@@ -1,5 +1,5 @@
 /* ============================================================
-   choroplethMap.js � 3D Orthographic Globe (D3)
+   choroplethMap.js — 3D Orthographic Globe (D3)
    Data: world-110m.json (TopoJSON) + cmip6 grid JSONs
    Renders gridded data as colored circles on a rotatable globe
    ============================================================ */
@@ -46,7 +46,7 @@ function choroplethMap(container, data) {
     .rotate(state.rotation);
 
   const baseScale = projection.scale();
-  // Zero out projection translate � we use globeG transform for centering
+  // Zero out projection translate — we use globeG transform for centering
   projection.translate([0, 0]);
   const geoPath = d3.geoPath().projection(projection);
 
@@ -95,7 +95,7 @@ function choroplethMap(container, data) {
     .attr('dx', 0).attr('dy', 4).attr('stdDeviation', 12)
     .attr('flood-color', '#000').attr('flood-opacity', 0.4);
 
-  // Blur for heatmap (subtle � too much blur + low opacity = invisible dots)
+  // Blur for heatmap (subtle — too much blur + low opacity = invisible dots)
   defs.append('filter').attr('id', 'heatmap-blur')
     .append('feGaussianBlur').attr('stdDeviation', 1.5);
 
@@ -266,7 +266,7 @@ function choroplethMap(container, data) {
     const domain = colorScale.domain();
     const legendSvgScale = d3.scaleLinear().domain(domain).range([0, legendWidth]);
     const legendAxis = d3.axisBottom(legendSvgScale).ticks(4)
-      .tickFormat(d => variable === 'tas' ? `${d}�C` : `${d.toFixed(1)}`);
+      .tickFormat(d => variable === 'tas' ? `${d}°C` : `${d.toFixed(1)}`);
 
     legendG.append('rect').attr('x', -6).attr('y', -22)
       .attr('width', legendWidth + 12).attr('height', 50).attr('rx', 4)
@@ -274,7 +274,7 @@ function choroplethMap(container, data) {
 
     legendG.append('text').attr('x', 0).attr('y', -8)
       .attr('fill', '#cbd5e1').attr('font-size', '11px').attr('font-weight', '600')
-      .text(variable === 'tas' ? 'Temperature anomaly (�C)' : 'Precip. anomaly (mm/day)');
+      .text(variable === 'tas' ? 'Temperature anomaly (°C)' : 'Precip. anomaly (mm/day)');
 
     const defsEl = legendG.append('defs');
     const linearGrad = defsEl.append('linearGradient')
@@ -387,10 +387,10 @@ function choroplethMap(container, data) {
   function tooltipHTML(d) {
     const regionName = findRegion(d.lat, d.lon);
     const val = d.value;
-    const unit = state.variable === 'tas' ? '�C' : ' mm/day';
+    const unit = state.variable === 'tas' ? '°C' : ' mm/day';
     const sign = val > 0 ? '+' : '';
     const decade = state.decadeLabels[state.currentDecadeIndex] || '';
-    return `<strong>${regionName}</strong><br><span style="font-size:1.1rem;font-weight:700;">${sign}${val.toFixed(2)}${unit}</span><br><span style="font-size:0.75rem;color:#94a3b8;">${SCENARIO_LABELS[state.scenario]} � ${VARIABLES[state.variable].label}<br>${decade}</span>`;
+    return `<strong>${regionName}</strong><br><span style="font-size:1.1rem;font-weight:700;">${sign}${val.toFixed(2)}${unit}</span><br><span style="font-size:0.75rem;color:#94a3b8;">${SCENARIO_LABELS[state.scenario]} · ${VARIABLES[state.variable].label}<br>${decade}</span>`;
   }
 
   // ---- Delaunay ----
@@ -403,7 +403,7 @@ function choroplethMap(container, data) {
       ? d3.Delaunay.from(visiblePoints.map(function (d) { return [d.cx, d.cy]; }))
       : null;
 
-    // Only keep visible dots in the DOM � back-face dots are removed entirely
+    // Only keep visible dots in the DOM — back-face dots are removed entirely
     var circles = heatmapG.selectAll('.heat-dot')
       .data(visiblePoints, function (d) { return d.lat + ',' + d.lon; });
 
@@ -570,7 +570,7 @@ function choroplethMap(container, data) {
     autoRotateBtn.text('? Stop').classed('active', true);
     function step() {
       if (!state.isAutoRotating) return;
-      state.rotation[1] = (state.rotation[1] + 0.15) % 360;
+      state.rotation[0] = (state.rotation[0] + 0.15) % 360;
       updateProjection();
       renderAll();
       state.autoRotateTimer = requestAnimationFrame(step);
