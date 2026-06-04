@@ -39,7 +39,11 @@
 
   // ---- Scrollama Setup ----
   function initScrollama() {
+<<<<<<< Updated upstream
     if (!document.querySelector('.step')) {
+=======
+    if (!document.querySelector('.step') || typeof scrollama !== 'function' || typeof updateVisualization !== 'function') {
+>>>>>>> Stashed changes
       return;
     }
 
@@ -93,6 +97,7 @@
     // Load data in the background
     await loadAllData();
 
+<<<<<<< Updated upstream
     if (window.renderEvidenceCharts && window.__CHART_DATA) {
       window.renderEvidenceCharts(window.__CHART_DATA);
     }
@@ -100,6 +105,16 @@
     // Initialize Scrollama for legacy step-based views if present.
     if (document.querySelector('.step')) {
       initScrollama();
+=======
+    if (window.__CHART_DATA && window.renderEvidenceCharts) {
+      await window.renderEvidenceCharts(window.__CHART_DATA);
+    }
+
+    // Initialize Scrollama only when the old step-based story exists
+    initScrollama();
+
+    if (document.querySelector('.step') && typeof updateVisualization === 'function') {
+>>>>>>> Stashed changes
       updateVisualization(1);
     }
 
