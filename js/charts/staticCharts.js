@@ -763,31 +763,17 @@
     }
   }
 
-<<<<<<< Updated upstream
-  function renderEvidenceCharts(data) {
-    const chartMap = [
-=======
   async function renderEvidenceCharts(data) {
     const charts = [
->>>>>>> Stashed changes
       { id: 'evidence-line-chart', step: 3 },
       { id: 'evidence-region-chart', step: 4 },
       { id: 'evidence-risk-chart', step: 5 },
     ];
 
-<<<<<<< Updated upstream
-    chartMap.forEach(({ id, step }) => {
-      const container = document.getElementById(id);
-      if (container) {
-        renderStoryChart(step, container, data);
-      }
-    });
-=======
     await Promise.all(charts.map(({ id, step }) => {
       const container = document.getElementById(id);
       return renderStoryChart(step, container, data);
     }));
->>>>>>> Stashed changes
   }
 
   window.renderStoryChart = renderStoryChart;
