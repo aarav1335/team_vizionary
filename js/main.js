@@ -39,6 +39,10 @@
 
   // ---- Scrollama Setup ----
   function initScrollama() {
+    if (!document.querySelector('.step')) {
+      return;
+    }
+
     const scroller = scrollama();
 
     scroller
@@ -89,11 +93,15 @@
     // Load data in the background
     await loadAllData();
 
-    // Initialize Scrollama for steps 1–6
-    initScrollama();
+    if (window.renderEvidenceCharts && window.__CHART_DATA) {
+      window.renderEvidenceCharts(window.__CHART_DATA);
+    }
 
-    // Set initial visualization state
-    updateVisualization(1);
+    // Initialize Scrollama for legacy step-based views if present.
+    if (document.querySelector('.step')) {
+      initScrollama();
+      updateVisualization(1);
+    }
 
     // Watch for the centered interactive section
     initInteractiveObserver();

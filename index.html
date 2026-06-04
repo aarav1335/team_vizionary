@@ -16,8 +16,6 @@
 
   <!-- D3.js v7 -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <!-- Scrollama -->
-  <script src="https://unpkg.com/scrollama@3"></script>
   <!-- TopoJSON client -->
   <script src="https://unpkg.com/topojson-client@3"></script>
 </head>
@@ -147,120 +145,76 @@
     </div>
   </section>
 
-  <!-- ===== SCROLLYTELLING ===== -->
-  <section id="evidence" class="motivation-intro" aria-labelledby="evidence-title">
-    <div class="section-shell compact">
-      <p class="section-kicker">Motivation</p>
-      <h2 id="evidence-title">The stakes become visible when the same planet is viewed six ways.</h2>
-      <p>
-        Each figure below is a D3 visualization rendered from the processed CMIP6 data,
-        designed to show why a pathway comparison matters before you enter the fully
-        interactive globe.
-      </p>
+  <!-- ===== EVIDENCE ===== -->
+  <section id="evidence" class="evidence-section" aria-labelledby="evidence-title">
+    <div class="section-shell">
+      <div class="section-header evidence-header">
+        <p class="section-kicker">Narrative Evidence</p>
+        <h2 id="evidence-title">Three findings explain why the pathway matters.</h2>
+        <p>
+          The story does not need every possible chart. It needs the clearest evidence:
+          futures diverge over time, global averages hide regional extremes, and climate
+          risk combines heat with changing water patterns.
+        </p>
+      </div>
+
+      <div class="evidence-stack">
+        <article class="evidence-panel">
+          <div class="evidence-copy">
+            <p class="evidence-number">01</p>
+            <p class="step-kicker">Pathway divergence</p>
+            <h3>Emissions choices create different climates by 2100.</h3>
+            <p>
+              The four SSP pathways start from the same recent climate, then separate as
+              emissions accumulate. The low pathway bends toward stabilization; the
+              fossil-fueled benchmark keeps climbing.
+            </p>
+            <p class="evidence-finding">
+              Finding: the gap between SSP1-2.6 and SSP5-8.5 becomes the central story,
+              not a footnote.
+            </p>
+          </div>
+          <div class="evidence-chart" id="evidence-line-chart" aria-label="D3 line chart showing global temperature divergence across scenarios"></div>
+        </article>
+
+        <article class="evidence-panel reverse">
+          <div class="evidence-copy">
+            <p class="evidence-number">02</p>
+            <p class="step-kicker">Regional amplification</p>
+            <h3>The Arctic turns a global average into a regional emergency.</h3>
+            <p>
+              Global warming is a useful headline, but regional summaries show who is
+              pushed farthest from the historical baseline. Under SSP5-8.5, every region
+              warms, but the Arctic moves into a different category.
+            </p>
+            <p class="evidence-finding">
+              Finding: the places that warm fastest are not always visible in a global
+              average.
+            </p>
+          </div>
+          <div class="evidence-chart" id="evidence-region-chart" aria-label="D3 bar chart showing late-century warming by region"></div>
+        </article>
+
+        <article class="evidence-panel">
+          <div class="evidence-copy">
+            <p class="evidence-number">03</p>
+            <p class="step-kicker">Compound risk</p>
+            <h3>Climate risk is not just hotter. It is hotter plus shifting water.</h3>
+            <p>
+              Temperature rises everywhere, but precipitation does not move uniformly.
+              Comparing heat and rainfall together reveals why adaptation looks different
+              across regions.
+            </p>
+            <p class="evidence-finding">
+              Finding: the same emissions pathway can mean different combinations of
+              heat, drought, and rainfall stress.
+            </p>
+          </div>
+          <div class="evidence-chart" id="evidence-risk-chart" aria-label="D3 scatterplot comparing temperature and precipitation changes by region"></div>
+        </article>
+      </div>
     </div>
   </section>
-
-  <main aria-label="Motivation visualizations">
-
-    <!-- Sticky visualization panel -->
-    <div id="viz-container">
-      <div id="viz-panel">
-        <!-- PNG fallback if D3 data rendering fails -->
-        <img id="viz-img" src="img/01_global_temperature_change_map.png" alt="Climate visualization">
-        <!-- Live D3 story charts for steps 1-6 -->
-        <div id="viz-d3" style="display:none;"></div>
-      </div>
-    </div>
-
-    <!-- Scrollable text steps -->
-    <article id="scrolly">
-      <!-- Step 1 — Context -->
-      <div class="step" data-step="1">
-        <div class="step-card">
-          <p class="step-kicker">Heat pattern</p>
-          <h2>Warming is global, but not evenly distributed.</h2>
-          <p>
-            Under the fossil-fueled pathway, late-century warming appears across the
-            entire map. The deepest signal is at high latitudes, where Arctic warming
-            amplifies faster than the global average.
-          </p>
-          <p class="step-label">Temperature anomaly under SSP5-8.5 by 2100</p>
-        </div>
-      </div>
-
-      <!-- Step 2 — Current State -->
-      <div class="step" data-step="2">
-        <div class="step-card">
-          <p class="step-kicker">Water pattern</p>
-          <h2>Rainfall does not shift in one direction.</h2>
-          <p>
-            Precipitation responds unevenly: some regions become wetter, some become
-            drier, and some see sharper variability. This is why climate risk cannot be
-            understood from temperature alone.
-          </p>
-          <p class="step-label">Precipitation change under SSP5-8.5 by 2100</p>
-        </div>
-      </div>
-
-      <!-- Step 3 — SSP5-8.5 (Worst Case) -->
-      <div class="step" data-step="3">
-        <div class="step-card">
-          <p class="step-kicker">Pathway split</p>
-          <h2>The four futures separate quickly.</h2>
-          <p>
-            The scenario lines begin near the same present, then diverge as emissions
-            choices accumulate. By the end of the century, the difference between
-            SSP1-2.6 and SSP5-8.5 is not a subtle modeling detail; it is a different
-            operating climate.
-          </p>
-          <p class="step-label">Global temperature scenarios over time</p>
-        </div>
-      </div>
-
-      <!-- Step 4 — SSP3-7.0 (High) -->
-      <div class="step" data-step="4">
-        <div class="step-card">
-          <p class="step-kicker">Regional burden</p>
-          <h2>The Arctic becomes the clearest warning signal.</h2>
-          <p>
-            Regional averages reveal the hidden geography of global warming. Every
-            region warms under SSP5-8.5, but the Arctic is pushed farthest from its
-            historical baseline.
-          </p>
-          <p class="step-label">Projected 2100 warming by region</p>
-        </div>
-      </div>
-
-      <!-- Step 5 — SSP2-4.5 (Middle) -->
-      <div class="step" data-step="5">
-        <div class="step-card">
-          <p class="step-kicker">Compound risk</p>
-          <h2>Heat and rainfall combine into regional stress.</h2>
-          <p>
-            Warming is universal, but precipitation change is more local. The scatterplot
-            shows which regions face the double problem of rising heat and shifting water
-            availability.
-          </p>
-          <p class="step-label">Temperature vs. precipitation change by region</p>
-        </div>
-      </div>
-
-      <!-- Step 6 — SSP1-2.6 (Best Case) -->
-      <div class="step" data-step="6">
-        <div class="step-card">
-          <p class="step-kicker">Acceleration</p>
-          <h2>By decade, the pattern becomes impossible to miss.</h2>
-          <p>
-            The heatmap turns the century into a timeline. Regional warming does not
-            arrive all at once; it intensifies decade by decade, making early pathway
-            choices visible later in the data.
-          </p>
-          <p class="step-label">Regional warming accelerates through the century</p>
-        </div>
-      </div>
-
-    </article>
-  </main>
 
   <!-- ===== INTERACTIVE INTRO — Centered Transition ===== -->
   <section id="interactive-intro">
@@ -268,9 +222,9 @@
       <p class="section-kicker">Interactive Exploration</p>
       <h2>Now test the futures yourself.</h2>
       <p class="interactive-intro-text">
-        The evidence section motivates the problem; the explorer lets you investigate it.
-        Switch between SSP pathways, compare temperature and precipitation, scrub through
-        decades, and rotate the globe to locate how climate futures move across space.
+        The evidence section gives you the argument. The globe lets you investigate the
+        spatial pattern yourself: switch pathways, compare temperature and precipitation,
+        scrub through decades, and rotate the planet to see how the future moves.
       </p>
       <div class="scroll-indicator">
         <span>Scroll to explore</span>
@@ -305,8 +259,8 @@
           <span>02</span>
           <h3>D3 evidence layer</h3>
           <p>
-            The six motivation figures are rendered as D3 SVG charts from the processed
-            data while preserving the notebook's analytical intent.
+            The three narrative evidence figures are rendered as D3 SVG charts from the
+            processed data and annotated around the project thesis.
           </p>
         </article>
         <article>

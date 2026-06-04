@@ -763,5 +763,21 @@
     }
   }
 
+  function renderEvidenceCharts(data) {
+    const chartMap = [
+      { id: 'evidence-line-chart', step: 3 },
+      { id: 'evidence-region-chart', step: 4 },
+      { id: 'evidence-risk-chart', step: 5 },
+    ];
+
+    chartMap.forEach(({ id, step }) => {
+      const container = document.getElementById(id);
+      if (container) {
+        renderStoryChart(step, container, data);
+      }
+    });
+  }
+
   window.renderStoryChart = renderStoryChart;
+  window.renderEvidenceCharts = renderEvidenceCharts;
 })();
