@@ -76,72 +76,146 @@
         <p class="section-kicker">Primer</p>
         <h2 id="primer-title">Before the charts: what are we comparing?</h2>
         <p>
-          CMIP6 is a coordinated library of climate model experiments used by researchers
-          around the world. Instead of asking for one prediction, CMIP6 asks what the
-          climate system does under different Shared Socioeconomic Pathways, or SSPs:
-          plausible futures built around emissions, energy choices, land use, and policy.
+          <span class="tooltip-word" data-def="The Coupled Model Intercomparison Project Phase 6 — a coordinated library of climate simulations run by over 40 institutions worldwide to project how Earth's climate evolves under different future scenarios.">CMIP6</span>
+          is a global scientific effort that models Earth's climate not as a single prediction, but as a set of plausible futures. Each future is defined by a
+          <span class="tooltip-word" data-def="Shared Socioeconomic Pathways — five scenarios describing possible futures based on different levels of greenhouse gas emissions, energy policy, land use, and global cooperation. They range from aggressive sustainability (SSP1) to unchecked fossil-fuel growth (SSP5).">SSP</span>
+          — a Shared Socioeconomic Pathway — built around choices we are making right now about emissions, energy, and policy. Because every pathway runs through the same
+          <span class="tooltip-word" data-def="A group of multiple climate models run together. Using an ensemble instead of a single model gives more reliable projections by averaging out individual model biases.">model ensemble</span>,
+          differences in warming and rainfall reflect those choices directly — not a change in chart design. This project tracks two key signals:
+          <span class="tooltip-word" data-def="Near-surface air temperature anomaly — how much warmer or cooler a region is compared to the 1995–2014 average baseline period.">temperature anomaly</span>
+          and
+          <span class="tooltip-word" data-def="Daily precipitation anomaly — the change in rainfall or snowfall compared to the 1995–2014 baseline, measured in millimeters per day.">precipitation anomaly</span>
+          across eight regions through 2100, letting you see exactly how each pathway reshapes the planet.
         </p>
       </div>
 
-      <div class="primer-grid">
-        <article class="primer-card">
-          <p class="card-kicker">Model ensemble</p>
-          <h3>CMIP6 gives us a controlled way to compare futures.</h3>
-          <p>
-            Each pathway is run through climate models using the same physical system.
-            That makes the comparison meaningful: differences in warming and rainfall are
-            tied to the pathway assumptions, not a change in chart design.
-          </p>
-        </article>
-        <article class="primer-card">
-          <p class="card-kicker">Project focus</p>
-          <h3>We track heat and precipitation through 2100.</h3>
-          <p>
-            The explorer uses near-surface air temperature and daily precipitation
-            anomalies relative to a 1995-2014 baseline, with regional summaries for the
-            Arctic, continents, South Asia, Australia, and the global average.
-          </p>
-        </article>
+    <div class="ssp-tabs" aria-label="SSP Scenario Tabs">
+
+      <!-- Tab buttons -->
+      <div class="ssp-tab-list" role="tablist">
+        <button class="ssp-tab active" role="tab" data-tab="ssp1" aria-selected="true" aria-controls="panel-ssp1">
+          <span class="ssp-tab-code">SSP1-2.6</span>
+          <span class="ssp-tab-name">Low-warming</span>
+        </button>
+        <button class="ssp-tab" role="tab" data-tab="ssp2" aria-selected="false" aria-controls="panel-ssp2">
+          <span class="ssp-tab-code">SSP2-4.5</span>
+          <span class="ssp-tab-name">Middle path</span>
+        </button>
+        <button class="ssp-tab" role="tab" data-tab="ssp3" aria-selected="false" aria-controls="panel-ssp3">
+          <span class="ssp-tab-code">SSP3-7.0</span>
+          <span class="ssp-tab-name">Regional rivalry</span>
+        </button>
+        <button class="ssp-tab" role="tab" data-tab="ssp5" aria-selected="false" aria-controls="panel-ssp5">
+          <span class="ssp-tab-code">SSP5-8.5</span>
+          <span class="ssp-tab-name">Fossil-fueled</span>
+        </button>
       </div>
 
-      <div class="scenario-grid" aria-label="Shared Socioeconomic Pathway summaries">
-        <article class="scenario-card low">
-          <p class="scenario-code">SSP1-2.6</p>
-          <h3>The low-warming path</h3>
-          <p>
-            A sustainability-focused future with aggressive emissions cuts. Warming is
-            not erased, but the late-century global average stays near <strong>1.6°C</strong>
-            in this model run, leaving more room for adaptation.
-          </p>
-        </article>
-        <article class="scenario-card mid">
-          <p class="scenario-code">SSP2-4.5</p>
-          <h3>Middle-of-the-road drift</h3>
-          <p>
-            Current policy momentum continues with partial mitigation. The world still
-            warms substantially, reaching about <strong>3.0°C</strong> globally by late
-            century, and the adaptation window narrows.
-          </p>
-        </article>
-        <article class="scenario-card high">
-          <p class="scenario-code">SSP3-7.0</p>
-          <h3>Regional rivalry</h3>
-          <p>
-            Cooperation weakens, emissions remain high, and regional vulnerability grows.
-            Global warming rises to roughly <strong>5.0°C</strong>, while the Arctic
-            warms more than twice that amount.
-          </p>
-        </article>
-        <article class="scenario-card very-high">
-          <p class="scenario-code">SSP5-8.5</p>
-          <h3>Fossil-fueled development</h3>
-          <p>
-            A fossil-fuel intensive benchmark where warming is fast and large. By
-            2091-2100, the global mean reaches about <strong>6.2°C</strong> above the
-            baseline and the Arctic approaches <strong>14.9°C</strong>.
-          </p>
-        </article>
+      <!-- Tab panels -->
+      <div class="ssp-tab-panels">
+
+        <div class="ssp-panel active low" id="panel-ssp1" role="tabpanel" aria-labelledby="tab-ssp1">
+          <div class="ssp-panel-left">
+            <p class="ssp-panel-code">SSP1-2.6</p>
+            <h3>The low-warming path</h3>
+            <p>A sustainability-focused future with aggressive emissions cuts. Warming is not erased, but the late-century global average stays near <strong>1.6°C</strong> in this model run, leaving more room for adaptation.</p>
+          </div>
+          <div class="ssp-panel-stats">
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">1.6°C</span>
+              <span class="ssp-stat-label">Global avg by 2100</span>
+            </div>
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">~3°C</span>
+              <span class="ssp-stat-label">Arctic warming</span>
+            </div>
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">Low</span>
+              <span class="ssp-stat-label">Emissions level</span>
+            </div>
+          </div>
+          <div class="ssp-panel-nav">
+            <button class="ssp-next-btn" data-next="ssp2">Next scenario →</button>
+          </div>
+        </div>
+
+        <div class="ssp-panel mid" id="panel-ssp2" role="tabpanel" aria-labelledby="tab-ssp2">
+          <div class="ssp-panel-left">
+            <p class="ssp-panel-code">SSP2-4.5</p>
+            <h3>Middle-of-the-road drift</h3>
+            <p>Current policy momentum continues with partial mitigation. The world still warms substantially, reaching about <strong>3.0°C</strong> globally by late century, and the adaptation window narrows.</p>
+          </div>
+          <div class="ssp-panel-stats">
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">3.0°C</span>
+              <span class="ssp-stat-label">Global avg by 2100</span>
+            </div>
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">~6°C</span>
+              <span class="ssp-stat-label">Arctic warming</span>
+            </div>
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">Mid</span>
+              <span class="ssp-stat-label">Emissions level</span>
+            </div>
+          </div>
+          <div class="ssp-panel-nav">
+            <button class="ssp-next-btn" data-next="ssp3">Next scenario →</button>
+          </div>
+        </div>
+
+        <div class="ssp-panel high" id="panel-ssp3" role="tabpanel" aria-labelledby="tab-ssp3">
+          <div class="ssp-panel-left">
+            <p class="ssp-panel-code">SSP3-7.0</p>
+            <h3>Regional rivalry</h3>
+            <p>Cooperation weakens, emissions remain high, and regional vulnerability grows. Global warming rises to roughly <strong>5.0°C</strong>, while the Arctic warms more than twice that amount.</p>
+          </div>
+          <div class="ssp-panel-stats">
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">5.0°C</span>
+              <span class="ssp-stat-label">Global avg by 2100</span>
+            </div>
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">>10°C</span>
+              <span class="ssp-stat-label">Arctic warming</span>
+            </div>
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">High</span>
+              <span class="ssp-stat-label">Emissions level</span>
+            </div>
+          </div>
+          <div class="ssp-panel-nav">
+            <button class="ssp-next-btn" data-next="ssp5">Next scenario →</button>
+          </div>
+        </div>
+
+        <div class="ssp-panel very-high" id="panel-ssp5" role="tabpanel" aria-labelledby="tab-ssp5">
+          <div class="ssp-panel-left">
+            <p class="ssp-panel-code">SSP5-8.5</p>
+            <h3>Fossil-fueled development</h3>
+            <p>A fossil-fuel intensive benchmark where warming is fast and large. By 2091–2100, the global mean reaches about <strong>6.2°C</strong> above the baseline and the Arctic approaches <strong>14.9°C</strong>.</p>
+          </div>
+          <div class="ssp-panel-stats">
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">6.2°C</span>
+              <span class="ssp-stat-label">Global avg by 2100</span>
+            </div>
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">14.9°C</span>
+              <span class="ssp-stat-label">Arctic warming</span>
+            </div>
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">Very high</span>
+              <span class="ssp-stat-label">Emissions level</span>
+            </div>
+          </div>
+          <div class="ssp-panel-nav">
+            <button class="ssp-next-btn" data-next="ssp1">↩ Start over</button>
+          </div>
+        </div>
+
       </div>
+    </div>
     </div>
   </section>
 
