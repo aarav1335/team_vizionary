@@ -14,14 +14,14 @@ function updateVisualization(step) {
   const vizImg = document.getElementById('viz-img');
   const vizD3 = document.getElementById('viz-d3');
 
-  // If neither element exists, skip (e.g. page layout without scrolly panel)
-  if (!vizImg && !vizD3) return;
-
-  // Update step indicator on body (for debugging / CSS hooks)
+  // Always update step indicator — needed for CSS to reveal step cards
   document.body.dataset.currentStep = step;
   document.querySelectorAll('.step').forEach((stepEl) => {
     stepEl.classList.toggle('active', parseInt(stepEl.dataset.step, 10) === step);
   });
+
+  // If neither viz element exists, skip chart rendering
+  if (!vizImg && !vizD3) return;
 
   // Prefer live D3 story charts. Keep the PNGs as a fallback if data loading fails.
   if (vizD3 && window.renderStoryChart && window.__CHART_DATA) {

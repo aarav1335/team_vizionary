@@ -18,6 +18,8 @@
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <!-- TopoJSON client -->
   <script src="https://unpkg.com/topojson-client@3"></script>
+  <!-- Scrollama -->
+  <script src="https://unpkg.com/scrollama"></script>
 </head>
 <body>
   <nav class="site-nav" aria-label="Primary navigation">
@@ -165,79 +167,150 @@
           </div>
         </div>
 
-      <!-- Step 2 — Current State -->
-      <div class="step" data-step="2">
-        <div class="step-card">
-          <h2>Present-Day Warming</h2>
-          <p>
-            Warming is already here. Between 2015 and 2024, global average temperatures
-            have risen <strong>~0.3–0.9°C</strong> above the 1995–2014 baseline, with
-            the Arctic warming several times faster. Precipitation patterns are also
-            shifting — some regions are getting wetter, others drier.
-          </p>
-          <p class="step-label">Precipitation change under SSP5-8.5 by 2100</p>
-        </div>
-      </div>
-
-      <!-- Step 3 — SSP5-8.5 (Worst Case) -->
-      <div class="step" data-step="3">
-        <div class="step-card">
-          <h2>SSP5-8.5: Business as Usual</h2>
-          <p>
-            If emissions continue unabated (the "fossil-fueled development" path),
-            global temperatures could rise <strong>4–5°C</strong> by 2100. The Arctic
-            would warm over 15°C. This scenario represents the upper bound of possible
-            climate outcomes — and the stakes couldn't be higher.
-          </p>
-          <p class="step-label">Global temperature scenarios over time</p>
+        <div class="ssp-panel high" id="panel-ssp3" role="tabpanel" aria-labelledby="tab-ssp3">
+          <div class="ssp-panel-left">
+            <p class="ssp-panel-code">SSP3-7.0</p>
+            <h3>Regional rivalry heats up</h3>
+            <p>A fragmented world of resurgent nationalism and trade barriers. Emissions continue to climb, pushing global warming to about <strong>4.0°C</strong> by late century, with severe impacts on food and water security.</p>
+          </div>
+          <div class="ssp-panel-stats">
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">4.0°C</span>
+              <span class="ssp-stat-label">Global avg by 2100</span>
+            </div>
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">~10°C</span>
+              <span class="ssp-stat-label">Arctic warming</span>
+            </div>
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">High</span>
+              <span class="ssp-stat-label">Emissions level</span>
+            </div>
+          </div>
+          <div class="ssp-panel-nav">
+            <button class="ssp-next-btn" data-next="ssp5">Next scenario →</button>
+          </div>
         </div>
 
-      </div>
-
-      <!-- Step 4 — SSP3-7.0 (High) -->
-      <div class="step" data-step="4">
-        <div class="step-card">
-          <h2>SSP3-7.0: Regional Rivalry</h2>
-          <p>
-            In this high-emissions scenario, warming reaches <strong>~3–4°C</strong>
-            globally by 2100. But the impacts are far from uniform. The Arctic warms
-            more than four times the global average, while tropical regions face
-            combined heat and precipitation stress.
-          </p>
-          <p class="step-label">Projected 2100 warming by region</p>
-        </div>
-      </div>
-
-      <!-- Step 5 — SSP2-4.5 (Middle) -->
-      <div class="step" data-step="5">
-        <div class="step-card">
-          <h2>SSP2-4.5: Middle of the Road</h2>
-          <p>
-            Under this "middle path" scenario — where current policies continue but
-            some mitigation is adopted — warming stabilizes around <strong>~2.5–3°C</strong>.
-            The world still warms significantly, but many of the worst outcomes are avoided.
-          </p>
-          <p class="step-label">Temperature vs. precipitation change by region</p>
-        </div>
-      </div>
-
-      <!-- Step 6 — SSP1-2.6 (Best Case) -->
-      <div class="step" data-step="6">
-        <div class="step-card">
-          <h2>SSP1-2.6: The Green Path</h2>
-          <p>
-            With aggressive emissions reductions and a shift toward sustainability,
-            warming could be held to <strong>~1.5–2°C</strong>. This is the pathway
-            aligned with the Paris Agreement goals. It requires rapid decarbonization
-            — but the data shows it's still within reach.
-          </p>
-          <p class="step-label">Regional warming accelerates through the century</p>
+        <div class="ssp-panel very-high" id="panel-ssp5" role="tabpanel" aria-labelledby="tab-ssp5">
+          <div class="ssp-panel-left">
+            <p class="ssp-panel-code">SSP5-8.5</p>
+            <h3>Fossil-fueled development</h3>
+            <p>The highest-emissions pathway: rapid economic growth powered by unabated fossil fuel use. Global temperatures could rise <strong>6.0°C</strong> by 2100, with the Arctic warming beyond 15°C — a planetary-scale transformation.</p>
+          </div>
+          <div class="ssp-panel-stats">
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">6.0°C</span>
+              <span class="ssp-stat-label">Global avg by 2100</span>
+            </div>
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">~15°C</span>
+              <span class="ssp-stat-label">Arctic warming</span>
+            </div>
+            <div class="ssp-stat">
+              <span class="ssp-stat-value">Very High</span>
+              <span class="ssp-stat-label">Emissions level</span>
+            </div>
+          </div>
+          <div class="ssp-panel-nav">
+            <button class="ssp-next-btn" data-next="ssp1">Back to start ↺</button>
+          </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ===== SEA LEVEL RISE — Thermometer + Building Comparison ===== -->
+<!-- ===== EVIDENCE — Scrollytelling ===== -->
+<section id="evidence" class="evidence-section">
+  <div id="viz-container">
+    <div id="viz-panel">
+      <img id="viz-img" src="" alt="Climate visualization">
+      <div id="viz-d3"></div>
+    </div>
+  </div>
+
+  <div id="scrolly">
+    <div class="step" data-step="1">
+      <div class="step-card">
+        <h2>The Big Picture: Late-Century Warming</h2>
+        <p>
+          By 2100, under the fossil-fueled SSP5-8.5 scenario, the planet could warm
+          by <strong>4–5°C</strong> on average. The Arctic bears the brunt, with
+          temperature anomalies exceeding 15°C. This map shows the spatial pattern
+          of late-century warming — every region is affected, but not equally.
+        </p>
+        <p class="step-label">Projected temperature change by 2100 under SSP5-8.5</p>
+      </div>
+    </div>
+
+    <div class="step" data-step="2">
+      <div class="step-card">
+        <h2>Present-Day Warming</h2>
+        <p>
+          Warming is already here. Between 2015 and 2024, global average temperatures
+          have risen <strong>~0.3–0.9°C</strong> above the 1995–2014 baseline, with
+          the Arctic warming several times faster. Precipitation patterns are also
+          shifting — some regions are getting wetter, others drier.
+        </p>
+        <p class="step-label">Precipitation change under SSP5-8.5 by 2100</p>
+      </div>
+    </div>
+
+    <div class="step" data-step="3">
+      <div class="step-card">
+        <h2>SSP5-8.5: Business as Usual</h2>
+        <p>
+          If emissions continue unabated (the "fossil-fueled development" path),
+          global temperatures could rise <strong>4–5°C</strong> by 2100. The Arctic
+          would warm over 15°C. This scenario represents the upper bound of possible
+          climate outcomes — and the stakes couldn't be higher.
+        </p>
+        <p class="step-label">Global temperature scenarios over time</p>
+      </div>
+    </div>
+
+    <div class="step" data-step="4">
+      <div class="step-card">
+        <h2>SSP3-7.0: Regional Rivalry</h2>
+        <p>
+          In this high-emissions scenario, warming reaches <strong>~3–4°C</strong>
+          globally by 2100. But the impacts are far from uniform. The Arctic warms
+          more than four times the global average, while tropical regions face
+          combined heat and precipitation stress.
+        </p>
+        <p class="step-label">Projected 2100 warming by region</p>
+      </div>
+    </div>
+
+    <div class="step" data-step="5">
+      <div class="step-card">
+        <h2>SSP2-4.5: Middle of the Road</h2>
+        <p>
+          Under this "middle path" scenario — where current policies continue but
+          some mitigation is adopted — warming stabilizes around <strong>~2.5–3°C</strong>.
+          The world still warms significantly, but many of the worst outcomes are avoided.
+        </p>
+        <p class="step-label">Temperature vs. precipitation change by region</p>
+      </div>
+    </div>
+
+    <div class="step" data-step="6">
+      <div class="step-card">
+        <h2>SSP1-2.6: The Green Path</h2>
+        <p>
+          With aggressive emissions reductions and a shift toward sustainability,
+          warming could be held to <strong>~1.5–2°C</strong>. This is the pathway
+          aligned with the Paris Agreement goals. It requires rapid decarbonization
+          — but the data shows it's still within reach.
+        </p>
+        <p class="step-label">Regional warming accelerates through the century</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SEA LEVEL RISE — Thermometer + Building Comparison ===== -->
   <section id="sea-level" class="sea-level-section" aria-labelledby="sea-level-title">
     <div class="section-shell">
       <div class="section-header">
