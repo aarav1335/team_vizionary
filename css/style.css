@@ -1702,3 +1702,190 @@ main::before {
   background-size: cover;
   background-position: center;
 }
+
+/* ============================================================
+   Sea Level Rise Section
+   ============================================================ */
+
+.sea-level-section {
+  position: relative;
+  z-index: 30;
+  padding: 4.75rem 0 5.5rem;
+  scroll-margin-top: 4.5rem;
+  background: #f6f8f4;
+}
+
+.sea-level-viz-container {
+  margin-top: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 18px 50px rgba(20, 32, 44, 0.1);
+  overflow: hidden;
+}
+
+.slr-chart-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 560px;
+}
+
+.slr-thermo-svg {
+  flex: 0 0 28%;
+  min-width: 160px;
+  background: linear-gradient(180deg, #fefefe 0%, #f8f6f0 100%);
+  border-right: 1px solid var(--line);
+}
+
+.slr-scene-svg {
+  flex: 1 1 72%;
+  background: linear-gradient(180deg, #e8f4f8 0%, #e0eef4 35%, #edebd8 70%, #f0ece0 100%);
+}
+
+/* Thermometer styles */
+.slr-tube-bg {
+  fill: #e8e4d8;
+  stroke: none;
+}
+
+.slr-tube-border {
+  pointer-events: none;
+}
+
+.slr-mercury-fill {
+  transition: y 0.25s ease, height 0.25s ease;
+}
+
+.slr-bulb {
+  filter: drop-shadow(0 2px 4px rgba(180, 40, 40, 0.35));
+}
+
+.slr-temp-label {
+  pointer-events: none;
+  transition: fill 0.3s ease;
+}
+
+.slr-ticks line {
+  stroke: #889;
+  stroke-width: 1;
+}
+
+.slr-tick-labels text {
+  dominant-baseline: middle;
+}
+
+.slr-ssp-dot {
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+  transition: r 0.2s ease;
+}
+
+.slr-ssp-dot:hover {
+  r: 6.5;
+}
+
+/* Scene styles */
+.slr-ground {
+  shape-rendering: crispEdges;
+}
+
+.slr-ground-fill {
+  shape-rendering: crispEdges;
+}
+
+.slr-baseline {
+  shape-rendering: crispEdges;
+}
+
+.slr-water-fill {
+  transition: y 0.8s cubic-bezier(0.4, 0, 0.2, 1), height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slr-water-line {
+  transition: y1 0.8s cubic-bezier(0.4, 0, 0.2, 1), y2 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slr-value-label {
+  transition: y 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slr-ref-marks text {
+  dominant-baseline: middle;
+}
+
+/* Readout panel */
+.slr-readout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem 1.5rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--line);
+  background: #fafcf8;
+  text-align: center;
+}
+
+.slr-readout-temp,
+.slr-readout-slr {
+  font-size: 1rem;
+  color: #3f4e59;
+}
+
+.slr-readout-temp strong {
+  color: #c44f3d;
+}
+
+.slr-readout-slr strong {
+  color: var(--ocean);
+  font-size: 1.2rem;
+}
+
+.slr-readout-risk {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+
+.slr-risk-low { background: #e3f2ee; color: #286052; }
+.slr-risk-moderate { background: #fff3e0; color: #d67b2a; }
+.slr-risk-high { background: #fde8e8; color: #c44f3d; }
+.slr-risk-extreme { background: #fce4ec; color: #8b1a1a; }
+
+.sea-level-attribution {
+  margin-top: 1rem;
+  color: #687984;
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+/* Mobile: stack thermometer above scene */
+@media (max-width: 700px) {
+  .slr-chart-wrapper {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .slr-thermo-svg {
+    flex: 0 0 auto;
+    min-width: unset;
+    width: 100%;
+    height: 220px;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .slr-scene-svg {
+    flex: 0 0 auto;
+    width: 100%;
+    height: 380px;
+  }
+
+  .slr-readout {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+}

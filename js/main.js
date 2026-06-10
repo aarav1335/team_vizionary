@@ -88,6 +88,28 @@
     observer.observe(vizSection);
   }
 
+  // ---- Intersection Observer for Sea Level Rise Section ---- */
+  function initSeaLevelObserver() {
+    var vizContainer = document.getElementById('viz-sea-level-rise');
+    if (!vizContainer || typeof seaLevelRiseChart !== 'function') return;
+
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            var chart = seaLevelRiseChart(vizContainer);
+            window.__seaLevelChart = chart;
+            observer.unobserve(vizContainer);
+            console.log('🌊 Sea-level rise chart initialized.');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(vizContainer);
+  }
+
   // ---- Bootstrap ----
   async function init() {
     // Load data in the background
@@ -106,6 +128,9 @@
 
     // Watch for the centered interactive section
     initInteractiveObserver();
+
+    // Watch for the sea-level rise section
+    initSeaLevelObserver();
 
     console.log('🚀 Climate Futures Explorer ready.');
   }

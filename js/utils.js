@@ -20,8 +20,54 @@ const SCENARIO_COLORS = {
   ssp585: '#b71c1c',
 };
 
+// ---- Sea-Level Rise Estimation ----
+/**
+ * Convert a global temperature anomaly (°C above 1995–2014 baseline)
+ * to estimated sea-level rise (meters).
+ *
+ * Calibrated to IPCC AR6 median projections:
+ *   SSP1-2.6 (~1.6°C) → ~0.40 m
+ *   SSP2-4.5 (~3.0°C) → ~0.55 m
+ *   SSP3-7.0 (~4.0°C) → ~0.70 m
+ *   SSP5-8.5 (~6.0°C) → ~1.00 m
+ *
+ * Uses: SLR = 0.1 + 0.08*T + 0.012*T²  (clamped to [0.05, 2.0])
+ *
+ * @param {number} tempAnomalyC — global temperature anomaly in °C
+ * @returns {number} estimated sea-level rise in meters
+ */
+function estimateSLR(tempAnomalyC) {
+  if (tempAnomalyC == null || isNaN(tempAnomalyC)) return 0.1;
+  var t = Math.max(0, tempAnomalyC);
+  var slr = 0.1 + 0.08 * t + 0.012 * t * t;
+  return Math.max(0.05, Math.min(2.0, slr));
+}
+
+/** Temperature range for the thermometer (min, max in °C) */
+var TEMP_RANGE = { min: 0, max: 8 };
+
+/** SSP reference temperatures at 2100 (global mean temp anomaly) */
+var SSP_2100_TEMPS = {
+  ssp126: 1.6,
+  ssp245: 3.0,
+  ssp370: 4.0,
+  ssp585: 6.0,
+};
+
+/** Reference marks for the sea-level rise scene */
+var SLR_REFERENCE_MARKS = [
+  { height: 0.05,  label: 'Ankle deep' },
+  { height: 0.15,  label: 'Shin deep' },
+  { height: 0.4,   label: 'Knee deep' },
+  { height: 0.7,   label: 'Thigh deep' },
+  { height: 0.9,   label: 'Waist deep' },
+  { height: 1.2,   label: 'Chest deep' },
+  { height: 1.5,   label: 'Chin deep' },
+  { height: 1.7,   label: 'Overhead' },
+];
+
 // ---- Regions ----
-const REGIONS = [
+var REGIONS = [
   'Arctic',
   'North America',
   'South America',

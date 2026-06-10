@@ -14,6 +14,9 @@ function updateVisualization(step) {
   const vizImg = document.getElementById('viz-img');
   const vizD3 = document.getElementById('viz-d3');
 
+  // If neither element exists, skip (e.g. page layout without scrolly panel)
+  if (!vizImg && !vizD3) return;
+
   // Update step indicator on body (for debugging / CSS hooks)
   document.body.dataset.currentStep = step;
   document.querySelectorAll('.step').forEach((stepEl) => {
@@ -22,14 +25,14 @@ function updateVisualization(step) {
 
   // Prefer live D3 story charts. Keep the PNGs as a fallback if data loading fails.
   if (vizD3 && window.renderStoryChart && window.__CHART_DATA) {
-    vizImg.style.display = 'none';
+    if (vizImg) vizImg.style.display = 'none';
     vizD3.style.display = 'flex';
     window.renderStoryChart(step, vizD3, window.__CHART_DATA);
     return;
   }
 
   const imgSrc = getStepImage(step);
-  if (imgSrc) {
+  if (imgSrc && vizImg) {
     vizImg.src = imgSrc;
     vizImg.style.display = 'block';
     if (vizD3) {
