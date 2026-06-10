@@ -35,7 +35,7 @@ function choroplethMap(container, data) {
   // ---- Dimensions ----
   const margin = { top: 20, right: 20, bottom: 20, left: 20 };
   const rect = container.getBoundingClientRect();
-  const width = Math.max(rect.width || container.clientWidth || 1000, 400);
+  const width = Math.max(rect.width || container.clientWidth || 1000, 320);
   const height = Math.max(rect.height || container.clientHeight || 500, 300);
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
@@ -238,7 +238,7 @@ function choroplethMap(container, data) {
 
   // ---- Buttons ----
   const resetBtn = d3.select(container).append('button')
-    .attr('class', 'map-reset-btn').text('? Reset')
+    .attr('class', 'map-reset-btn').text('Reset')
     .on('click', () => {
       stopAutoRotate();
       state.rotation = [0, -10, 0];
@@ -248,7 +248,7 @@ function choroplethMap(container, data) {
     });
 
   const autoRotateBtn = d3.select(container).append('button')
-    .attr('class', 'map-autorotate-btn').text('? Spin')
+    .attr('class', 'map-autorotate-btn').text('Spin')
     .on('click', toggleAutoRotate);
 
   // ---- Tooltip ----
@@ -567,7 +567,7 @@ function choroplethMap(container, data) {
   function startAutoRotate() {
     if (state.isAutoRotating) return;
     state.isAutoRotating = true;
-    autoRotateBtn.text('? Stop').classed('active', true);
+    autoRotateBtn.text('Stop').classed('active', true);
     function step() {
       if (!state.isAutoRotating) return;
       state.rotation[0] = (state.rotation[0] + 0.15) % 360;
@@ -581,7 +581,7 @@ function choroplethMap(container, data) {
   function stopAutoRotate() {
     state.isAutoRotating = false;
     if (state.autoRotateTimer) { cancelAnimationFrame(state.autoRotateTimer); state.autoRotateTimer = null; }
-    autoRotateBtn.text('? Spin').classed('active', false);
+    autoRotateBtn.text('Spin').classed('active', false);
   }
 
   function toggleAutoRotate() {

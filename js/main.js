@@ -39,6 +39,10 @@
 
   // ---- Scrollama Setup ----
   function initScrollama() {
+    if (!document.querySelector('.step') || typeof scrollama !== 'function' || typeof updateVisualization !== 'function') {
+      return;
+    }
+
     const scroller = scrollama();
 
     scroller
@@ -89,11 +93,16 @@
     // Load data in the background
     await loadAllData();
 
-    // Initialize Scrollama for steps 1–6
+    if (window.__CHART_DATA && window.renderEvidenceCharts) {
+      await window.renderEvidenceCharts(window.__CHART_DATA);
+    }
+
+    // Initialize Scrollama only when the old step-based story exists
     initScrollama();
 
-    // Set initial visualization state
-    updateVisualization(1);
+    if (document.querySelector('.step') && typeof updateVisualization === 'function') {
+      updateVisualization(1);
+    }
 
     // Watch for the centered interactive section
     initInteractiveObserver();
@@ -108,3 +117,25 @@
     init();
   }
 })();
+
+// SSP Tab switcher
+document.querySelectorAll('.ssp-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.tab;
+    document.querySelectorAll('.ssp-tab').forEach(t => {
+      t.classList.remove('active');
+      t.setAttribute('aria-selected', 'false');
+    });
+    document.querySelectorAll('.ssp-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    tab.setAttribute('aria-selected', 'true');
+    document.getElementById('panel-' + target).classList.add('active');
+  });
+});
+
+document.querySelectorAll('.ssp-next-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const next = btn.dataset.next;
+    document.querySelector(`.ssp-tab[data-tab="${next}"]`).click();
+  });
+});

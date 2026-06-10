@@ -1,14 +1,14 @@
 /* ============================================================
    scrollSections.js — Section trigger logic
-   Maps scroll steps 1–7 to static PNG images.
-   Interactive D3 viz is in a separate centered section below.
+   Maps scroll steps 1-6 to live D3 evidence charts.
+   Interactive globe is in a separate centered section below.
    ============================================================ */
 
 /**
  * Update the visualization based on the current scroll step.
  *
- * For steps 1–7: show the corresponding static PNG in the sticky viz panel.
- * The interactive D3 panel is now a separate centered section below the scrolly.
+ * For steps 1-6: render the corresponding D3 chart in the sticky viz panel.
+ * The interactive globe panel is a separate centered section below the scrolly.
  */
 function updateVisualization(step) {
   const vizImg = document.getElementById('viz-img');
@@ -20,12 +20,21 @@ function updateVisualization(step) {
     stepEl.classList.toggle('active', parseInt(stepEl.dataset.step, 10) === step);
   });
 
-  // Show the corresponding static image
+  // Prefer live D3 story charts. Keep the PNGs as a fallback if data loading fails.
+  if (vizD3 && window.renderStoryChart && window.__CHART_DATA) {
+    vizImg.style.display = 'none';
+    vizD3.style.display = 'flex';
+    window.renderStoryChart(step, vizD3, window.__CHART_DATA);
+    return;
+  }
+
   const imgSrc = getStepImage(step);
   if (imgSrc) {
     vizImg.src = imgSrc;
     vizImg.style.display = 'block';
-    if (vizD3) vizD3.style.display = 'none';
+    if (vizD3) {
+      vizD3.style.display = 'none';
+    }
   }
 }
 
